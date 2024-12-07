@@ -16,7 +16,7 @@ const directoryPrefab = preload("res://Scenes/directory.tscn")
 
 @onready var root: Directory = $Directory
 @onready var activeDirectory: Directory = root
-@onready var users = [$User, $User2]
+@onready var users: Array = [$User, $User2]
 @onready var activeUser: User = users[1]
 
 
@@ -24,8 +24,8 @@ var connectedNetNode: Net_Node
 
 
 func _ready() -> void:
-	for user in users:
-		_add_directory(user._get_name(), user._get_perms(), "/users/")
+	for user: User in users:
+		_add_directory(user._get_name(), user._get_perms(),user._get_perms(), "/users/")
 
 
 #Runs on each 'refreshTimer' timeout
@@ -33,7 +33,7 @@ func _refresh():
 	for user: User in users:
 		if root._find_directory_by_path(self, _parse_path("/users/" + user._get_name() + "/"), "/users/" + user._get_name() + "/") != null:
 			break
-		_add_directory(user._get_name(), user._get_perms(), "/users/")
+		_add_directory(user._get_name(), user._get_perms(),user._get_perms(), "/users/")
 
 
 #Changes this machine's ID
@@ -64,10 +64,10 @@ func _get_root() -> Directory:
 #Changes this machine's 'activeDirectory'
 func _set_active_directory(dirPathParsed: Array, dirPath: String) -> int:
 	var returnedDirectory: Directory = root._find_directory_by_path(self, dirPathParsed, dirPath)
-	if returnedDirectory != null && activeUser._eval_perms(returnedDirectory._get_perms()):
+	if returnedDirectory != null && activeUser._eval_perms(returnedDirectory._get_read_perms()):
 		activeDirectory = returnedDirectory
 		return 1
-	elif returnedDirectory != null && !activeUser._eval_perms(returnedDirectory._get_perms()):
+	elif returnedDirectory != null && !activeUser._eval_perms(returnedDirectory._get_read_perms()):
 		return 3
 	return 2
 
@@ -77,22 +77,23 @@ func _get_active_directory() -> Directory:
 	return activeDirectory
 
 
-func _add_directory(dirName: String, dirPerms: String, parentPath: String):
+func _add_directory(dirName: String, dirReadPerms: String,dirWritePerms: String, parentPath: String):
 	var newDir: Directory = directoryPrefab.instantiate()
 	var parent: Directory = root._find_directory_by_path(self ,_parse_path(parentPath), parentPath)
 	if !is_instance_valid(parent):
 		return false
 	newDir._set_name(dirName)
-	newDir._set_perms(dirPerms)
+	newDir._set_read_perms(dirReadPerms)
+	newDir._set_write_perms(dirWritePerms)
 	parent.add_child(newDir)
 
 
 func _remove_directory(parsedPath: Array, Path: String):
 	var returnedDirectory: Directory = root._find_directory_by_path(self, parsedPath, Path)
-	if returnedDirectory != null && activeUser._eval_perms(returnedDirectory._get_perms()):
+	if returnedDirectory != null && activeUser._eval_perms(returnedDirectory._get_write_perms()):
 		returnedDirectory.queue_free()
 		return 1
-	elif returnedDirectory != null && !activeUser._eval_perms(returnedDirectory._get_perms()):
+	elif returnedDirectory != null && !activeUser._eval_perms(returnedDirectory._get_write_perms()):
 		return 3
 	return 2
 

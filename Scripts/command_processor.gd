@@ -79,7 +79,7 @@ func help(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "help")
 
-	return "[color=green]help: - [/color] Returns this list of commands.\n[color=green]user: - [/color] Returns information on the current user.[color=green]\nlu: - [/color] List all users on current machine.\n[color=green]ls: - [/color] Lists files and directories in the working directory on the current machine.\n[color=green]info: - [/color]Returns info on the current machine.\n[color=green]scan: - [/color]Returns all computers on the connected NetNode.\n[color=green]comcon:int -> ID - [/color]Connects to the computer with the specified ID. (Cannot connect to a computer on a different NetNode to home)\n[color=green]nodecon:int -> ID - [/color]Connects to the NetNode with the specified ID. (Connecting to a different NetNode than your home computer will break the connection)\n[color=green]cu:String -> username, (optional)String -> password - [/color]Changes active user on current machine.\n[color=green]useradd:String -> username, (optional)String -> password, (optional)String -> permissions - [/color]Adds a new user to the current machine.\n[color=green]cd:String -> directory path('..' to go back a directory) - [/color]Changes the working directory.\n[color=green]mkdir:String -> name, String -> parent path('.' for current directory), (optional)String -> permissions - [/color]Creates a directory with the specified name under the parent directory."
+	return "[color=green]help: - [/color] Returns this list of commands.\n[color=green]user: - [/color] Returns information on the current user.[color=green]\nlu: - [/color] List all users on current machine.\n[color=green]ls: - [/color] Lists files and directories in the working directory on the current machine.\n[color=green]info: - [/color]Returns info on the current machine.\n[color=green]scan: - [/color]Returns all computers on the connected NetNode.\n[color=green]comcon:int -> ID - [/color]Connects to the computer with the specified ID. (Cannot connect to a computer on a different NetNode to home)\n[color=green]nodecon:int -> ID - [/color]Connects to the NetNode with the specified ID. (Connecting to a different NetNode than your home computer will break the connection)\n[color=green]cu:String -> username, (optional)String -> password - [/color]Changes active user on current machine.\n[color=green]useradd:String -> username, (optional)String -> password, (optional)String -> permissions - [/color]Adds a new user to the current machine.\n[color=green]cd:String -> directory path('..' to go back a directory) - [/color]Changes the working directory.\n[color=green]mkdir:String -> name, String -> parent path('.' for current directory), (optional)String -> read permissions, (optional)String -> write permissions - [/color]Creates a directory with the specified name under the parent directory."
 
 
 #Displays information on the current user
@@ -177,10 +177,14 @@ func listFiles(fullCommand: Array):
 		if !is_instance_valid(files[i]):
 			continue
 		fileListString += str(i + 1) + ". " + "[color=green]" + files[i]._get_name() + ":[/color] "
-		if currentComputer._get_active_user()._eval_perms(files[i]._get_perms()):
-			fileListString += "[color=green]" + files[i]._get_perms() + "[/color]\n"
+		if currentComputer._get_active_user()._eval_perms(files[i]._get_read_perms()):
+			fileListString += "[color=green]" + files[i]._get_read_perms() + "[/color], "
 		else:
-			fileListString += "[color=red]" + files[i]._get_perms() + "[/color]\n"
+			fileListString += "[color=red]" + files[i]._get_read_perms() + "[/color], "
+		if currentComputer._get_active_user()._eval_perms(files[i]._get_write_perms()):
+			fileListString += "[color=green]" + files[i]._get_write_perms() + "[/color]\n"
+		else:
+			fileListString += "[color=red]" + files[i]._get_write_perms() + "[/color]\n"
 	
 	return fileListString
 
@@ -207,16 +211,17 @@ func changeDirectory(fullCommand: Array):
 
 #Creates a 'directory' with the specified details
 func makeDirectory(fullCommand: Array) -> String:
-	if fullCommand.size() != 3 && fullCommand.size() != 4:
-		return _error_arg_number(fullCommand.size(), 2, "mkdir", 1)
+	if fullCommand.size() < 3 || fullCommand.size() > 5:
+		return _error_arg_number(fullCommand.size(), 2, "mkdir", 2)
 	
 	var dirName: String = fullCommand[1]
 	var pathString = fullCommand[2]
-	var dirPerms = currentComputer._get_active_user()._get_name()
+	var dirWritePerms = currentComputer._get_active_user()._get_name()
+	var dirReadPerms = currentComputer._get_active_user()._get_name()
 	
 	#Prevents unusable directorys being created
 	if dirName.contains("/"):
-		return "Path name cannot contain [color=red]'/'[/scolor]!"
+		return "Path name cannot contain [color=red]'/'[/color]!"
 	
 	#Checks and prepares the path input for later
 	if pathString[0] != "/" && pathString != '.':
@@ -230,13 +235,24 @@ func makeDirectory(fullCommand: Array) -> String:
 	if currentComputer._get_root()._find_directory_by_path(currentComputer, _parse_path(pathString + dirName + "/"), pathString + dirName + "/"):
 		return "directory with path [color=red]'%s'[/color] already exists!" % [pathString + dirName + "/"]
 	
-	#Checks if the 'activeUser' has permission to create the 'directory'
-	if fullCommand.size() == 4 && currentComputer._get_active_user()._eval_perms(fullCommand[3]):
-		dirPerms = fullCommand[3]
-	elif fullCommand.size() == 4 && !currentComputer._get_active_user()._eval_perms(fullCommand[3]):
-		return "user [color=red]'%s'[/color] does not have write permission to level [color=red]'%s'[/color]!" % [currentComputer._get_active_user()._get_name(), fullCommand[3]]
+	print(currentComputer._get_active_user()._eval_perms(fullCommand[3]))
+	print(currentComputer._get_active_user()._eval_perms(fullCommand[4]))
 	
-	currentComputer._add_directory(dirName, dirPerms, pathString)
+	#Checks if the 'activeUser' has permission to create the 'directory'
+	if fullCommand.size() == 5 && currentComputer._get_active_user()._eval_perms(fullCommand[3]) && currentComputer._get_active_user()._eval_perms(fullCommand[4]):
+		print(1)
+		dirReadPerms = fullCommand[3]
+		dirWritePerms = fullCommand[4]
+	if fullCommand.size() == 4 && currentComputer._get_active_user()._eval_perms(fullCommand[3]):
+		print(2)
+		dirWritePerms = fullCommand[3]
+		dirReadPerms = fullCommand[3]
+	if fullCommand.size() == 4 && !currentComputer._get_active_user()._eval_perms(fullCommand[3]):
+		return "user [color=red]'%s'[/color] does not have write permission to level [color=red]'%s'[/color]!" % [currentComputer._get_active_user()._get_name(), fullCommand[3]]
+	if fullCommand.size() == 5 && !currentComputer._get_active_user()._eval_perms(fullCommand[3]) && !currentComputer._get_active_user()._eval_perms(fullCommand[4]):
+		return "user [color=red]'%s'[/color] does not have write permission to level [color=red]'%s'[/color]!" % [currentComputer._get_active_user()._get_name(), fullCommand[3]]
+		
+	currentComputer._add_directory(dirName, dirReadPerms, dirWritePerms, pathString)
 	return "Created directory [color=green]'%s'[/color]!" % [pathString + dirName + "/"]
 
 
