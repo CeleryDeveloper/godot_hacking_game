@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://dmjje3pjfprba"]
+
+[ext_resource type="Script" path="res://Scripts/computer.gd" id="1_u0tv3"]
+[ext_resource type="PackedScene" uid="uid://bi2bjgtksoctl" path="res://Scenes/directory.tscn" id="2_g2ti6"]
+[ext_resource type="PackedScene" uid="uid://ccxc6xddor3cl" path="res://Scenes/file.tscn" id="3_2w82d"]
+[ext_resource type="PackedScene" uid="uid://bm42bua46ev6y" path="res://Scenes/user.tscn" id="4_k8ee0"]
+
+[node name="Computer" type="Node"]
+script = ExtResource("1_u0tv3")
+
+[node name="Directory" parent="." instance=ExtResource("2_g2ti6")]
+perms = "guest"
+
+[node name="Directory2" parent="Directory" instance=ExtResource("2_g2ti6")]
+directoryName = "home"
+perms = "guest"
+
+[node name="Directory" parent="Directory" instance=ExtResource("2_g2ti6")]
+directoryName = "logs"
+
+[node name="Directory3" parent="Directory" instance=ExtResource("2_g2ti6")]
+directoryName = "downloads"
+perms = "guest"
+
+[node name="Directory4" parent="Directory" instance=ExtResource("2_g2ti6")]
+directoryName = "bin"
+
+[node name="Directory5" parent="Directory" instance=ExtResource("2_g2ti6")]
+directoryName = "sys"
+
+[node name="File" parent="Directory/Directory5" instance=ExtResource("3_2w82d")]
+
+[node name="Directory6" parent="Directory" instance=ExtResource("2_g2ti6")]
+directoryName = "users"
+perms = "guest"
+
+[node name="User" parent="." instance=ExtResource("4_k8ee0")]
+
+[node name="User2" parent="." instance=ExtResource("4_k8ee0")]
+userName = "guest"
+userPassword = ""
+userPerms = "guest"
+
+[node name="refreshTimer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="refreshTimer" to="." method="_refresh"]

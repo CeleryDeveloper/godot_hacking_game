@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://b3yeq301bt5ix"]
+
+[ext_resource type="Script" path="res://Scripts/response.gd" id="1_mphob"]
+[ext_resource type="FontFile" uid="uid://67rccbw0m8xx" path="res://Fonts/VT323/VT323-Regular.ttf" id="2_a3lgw"]
+[ext_resource type="PackedScene" uid="uid://o576a8punt3m" path="res://Scenes/responseNoHistory.tscn" id="2_wi21m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_61l74"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3y0em"]
+
+[node name="Response" type="VBoxContainer"]
+script = ExtResource("1_mphob")
+
+[node name="InputHistory" type="RichTextLabel" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 2
+theme_override_colors/default_color = Color(1, 1, 1, 0.796078)
+theme_override_fonts/normal_font = ExtResource("2_a3lgw")
+theme_override_font_sizes/normal_font_size = 23
+theme_override_styles/focus = SubResource("StyleBoxEmpty_61l74")
+fit_content = true
+scroll_active = false
+context_menu_enabled = true
+selection_enabled = true
+
+[node name="Response" parent="." instance=ExtResource("2_wi21m")]
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3y0em")

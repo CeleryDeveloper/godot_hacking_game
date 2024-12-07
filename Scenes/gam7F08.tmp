@@ -1,0 +1,112 @@
+[gd_scene load_steps=12 format=3 uid="uid://flpjnlaxcsla"]
+
+[ext_resource type="Script" path="res://Scripts/game.gd" id="1_36ffd"]
+[ext_resource type="Script" path="res://Scripts/input.gd" id="1_h1hun"]
+[ext_resource type="Script" path="res://Scripts/command_processor.gd" id="2_5aoqe"]
+[ext_resource type="Script" path="res://Scripts/network_manager.gd" id="3_5u0fr"]
+[ext_resource type="PackedScene" uid="uid://dmjje3pjfprba" path="res://Scenes/computer.tscn" id="3_xo6vp"]
+[ext_resource type="FontFile" uid="uid://67rccbw0m8xx" path="res://Fonts/VT323/VT323-Regular.ttf" id="5_wrohv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b466x"]
+bg_color = Color(0, 0, 0, 0.576471)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2emde"]
+bg_color = Color(0, 0, 0, 0.470588)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jr0uj"]
+bg_color = Color(0, 0.0509804, 0, 0.364706)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b1b2a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s5vtn"]
+
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_36ffd")
+
+[node name="CommandProcessor" type="Node" parent="."]
+script = ExtResource("2_5aoqe")
+
+[node name="NetworkManager" type="Node" parent="."]
+script = ExtResource("3_5u0fr")
+startingComputers = 100
+maxComputers = 100
+
+[node name="Computer" parent="NetworkManager" instance=ExtResource("3_xo6vp")]
+computerName = "home"
+computerID = 192324
+
+[node name="Terminal" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_b466x")
+
+[node name="MarginContainer" type="MarginContainer" parent="Terminal"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Rows" type="VBoxContainer" parent="Terminal/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Stdout" type="PanelContainer" parent="Terminal/MarginContainer/Rows"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_2emde")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Terminal/MarginContainer/Rows/Stdout"]
+layout_mode = 2
+
+[node name="TerminalHistory" type="VBoxContainer" parent="Terminal/MarginContainer/Rows/Stdout/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="InputArea" type="PanelContainer" parent="Terminal/MarginContainer/Rows"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jr0uj")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Terminal/MarginContainer/Rows/InputArea"]
+layout_mode = 2
+
+[node name="Caret" type="Label" parent="Terminal/MarginContainer/Rows/InputArea/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.691357, 0.691357, 0.691357, 1)
+theme_override_fonts/font = ExtResource("5_wrohv")
+theme_override_font_sizes/font_size = 25
+text = " > "
+
+[node name="Input" type="LineEdit" parent="Terminal/MarginContainer/Rows/InputArea/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.690196, 0.690196, 0.690196, 1)
+theme_override_constants/outline_size = 0
+theme_override_constants/caret_width = 10
+theme_override_fonts/font = ExtResource("5_wrohv")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/focus = SubResource("StyleBoxEmpty_b1b2a")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_s5vtn")
+caret_blink = true
+script = ExtResource("1_h1hun")
+
+[node name="BatchTimer" type="Timer" parent="."]
+wait_time = 0.05
+autostart = true
+
+[connection signal="text_submitted" from="Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input" to="." method="_on_input_text_submitted"]
+[connection signal="text_submitted" from="Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input" to="Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input" method="_on_text_submitted"]
+[connection signal="timeout" from="BatchTimer" to="NetworkManager" method="_batch_gen"]

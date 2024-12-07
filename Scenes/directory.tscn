@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://bi2bjgtksoctl"]
+
+[ext_resource type="Script" path="res://Scripts/directory.gd" id="1_hul1s"]
+
+[node name="Directory" type="Node"]
+script = ExtResource("1_hul1s")
+
+[node name="refreshTimer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="refreshTimer" to="." method="_refresh_connected_children"]
+[connection signal="timeout" from="refreshTimer" to="." method="_update_path"]
