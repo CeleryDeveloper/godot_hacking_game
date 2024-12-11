@@ -9,6 +9,7 @@
 script = ExtResource("1_u0tv3")
 
 [node name="Directory" parent="." instance=ExtResource("2_g2ti6")]
+readPerms = "guest"
 
 [node name="Directory2" parent="Directory" instance=ExtResource("2_g2ti6")]
 directoryName = "home"

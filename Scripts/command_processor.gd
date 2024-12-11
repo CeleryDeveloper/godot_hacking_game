@@ -133,6 +133,7 @@ func listUsers(fullCommand: Array):
 	return userListString
 
 
+#Adds a 'user' to the current machine
 func addUser(fullCommand: Array) -> String:
 	if fullCommand.size() != 2 && fullCommand.size() != 3 && fullCommand.size() != 4:
 		return _error_arg_number(fullCommand.size(), 1, "useradd", 2)
@@ -209,7 +210,7 @@ func changeDirectory(fullCommand: Array):
 	return "No directory with path [color=red]'%s'[/color] was found!" % fullCommand[1]
 
 
-#Creates a 'directory' with the specified details
+#Creates a 'directory' with the specified details on the current machine
 func makeDirectory(fullCommand: Array) -> String:
 	if fullCommand.size() < 3 || fullCommand.size() > 5:
 		return _error_arg_number(fullCommand.size(), 2, "mkdir", 2)
@@ -235,27 +236,26 @@ func makeDirectory(fullCommand: Array) -> String:
 	if currentComputer._get_root()._find_directory_by_path(currentComputer, _parse_path(pathString + dirName + "/"), pathString + dirName + "/"):
 		return "directory with path [color=red]'%s'[/color] already exists!" % [pathString + dirName + "/"]
 	
-	print(currentComputer._get_active_user()._eval_perms(fullCommand[3]))
-	print(currentComputer._get_active_user()._eval_perms(fullCommand[4]))
-	
 	#Checks if the 'activeUser' has permission to create the 'directory'
 	if fullCommand.size() == 5 && currentComputer._get_active_user()._eval_perms(fullCommand[3]) && currentComputer._get_active_user()._eval_perms(fullCommand[4]):
-		print(1)
 		dirReadPerms = fullCommand[3]
 		dirWritePerms = fullCommand[4]
-	if fullCommand.size() == 4 && currentComputer._get_active_user()._eval_perms(fullCommand[3]):
-		print(2)
+	elif fullCommand.size() == 4 && currentComputer._get_active_user()._eval_perms(fullCommand[3]):
 		dirWritePerms = fullCommand[3]
 		dirReadPerms = fullCommand[3]
-	if fullCommand.size() == 4 && !currentComputer._get_active_user()._eval_perms(fullCommand[3]):
+	#Different errors for insufficient permissions
+	elif fullCommand.size() == 4 && !currentComputer._get_active_user()._eval_perms(fullCommand[3]):
 		return "user [color=red]'%s'[/color] does not have write permission to level [color=red]'%s'[/color]!" % [currentComputer._get_active_user()._get_name(), fullCommand[3]]
-	if fullCommand.size() == 5 && !currentComputer._get_active_user()._eval_perms(fullCommand[3]) && !currentComputer._get_active_user()._eval_perms(fullCommand[4]):
+	elif fullCommand.size() == 5 && !currentComputer._get_active_user()._eval_perms(fullCommand[3]):
 		return "user [color=red]'%s'[/color] does not have write permission to level [color=red]'%s'[/color]!" % [currentComputer._get_active_user()._get_name(), fullCommand[3]]
+	elif fullCommand.size() == 5 && !currentComputer._get_active_user()._eval_perms(fullCommand[4]):
+		return "user [color=red]'%s'[/color] does not have write permission to level [color=red]'%s'[/color]!" % [currentComputer._get_active_user()._get_name(), fullCommand[4]]
 		
 	currentComputer._add_directory(dirName, dirReadPerms, dirWritePerms, pathString)
 	return "Created directory [color=green]'%s'[/color]!" % [pathString + dirName + "/"]
 
 
+#Removes a 'file' or 'directory' on the current machine
 func remove(fullCommand: Array):
 	if fullCommand.size() != 2:
 		return _error_arg_number(fullCommand.size(), 1, "rm")
@@ -298,6 +298,7 @@ func connectComputer(fullCommand: Array):
 	return "Connected to [color=green]'%s'[/color]" % currentComputer.computerName
 
 
+#Connects to the 'NetNode' with the specified id
 func connectNetNode(fullCommand: Array):
 	if fullCommand.size() != 2:
 		return _error_arg_number(fullCommand.size(), 1, "nodecon")
