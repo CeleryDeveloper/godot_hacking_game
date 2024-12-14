@@ -78,14 +78,16 @@ func _process_command(input: String) -> String:
 
 #Start of command functions
 #Displays a list of all available commands
+const helpHelpMess: String = "[color=green]help: - [/color] Returns this list of commands."
 func help(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "help")
 
-	return "[color=green]help: - [/color] Returns this list of commands.\n[color=green]user: - [/color] Returns information on the current user.[color=green]\nlu: - [/color] List all users on current machine.\n[color=green]ls: - [/color] Lists files and directories in the working directory on the current machine.\n[color=green]info: - [/color]Returns info on the current machine.\n[color=green]scan: - [/color]Returns all computers on the connected NetNode.\n[color=green]comcon:int -> ID - [/color]Connects to the computer with the specified ID. (Cannot connect to a computer on a different NetNode to home)\n[color=green]nodecon:int -> ID - [/color]Connects to the NetNode with the specified ID. (Connecting to a different NetNode than your home computer will break the connection)\n[color=green]cu:String -> username, (optional)String -> password - [/color]Changes active user on current machine.\n[color=green]useradd:String -> username, (optional)String -> password, (optional)String -> permissions - [/color]Adds a new user to the current machine.\n[color=green]cd:String -> directory path('..' to go back a directory) - [/color]Changes the working directory.\n[color=green]mkdir:String -> name, String -> parent path('.' for current directory), (optional)String -> read permissions, (optional)String -> write permissions - [/color]Creates a directory with the specified name under the parent directory."
+	return helpHelpMess + "\n" + userHelpMess + "\n" + luHelpMess + "\n" + lsHelpMess + "\n" + infoHelpMess + "\n" + scanHelpMess + "\n" + comconHelpMess + "\n" + nodeconHelpMess + "\n" + cuHelpMess + "\n " + useraddHelpMess + "\n" + cdHelpMess + "\n" + mkdirHelpMess
 
 
 #Displays information on the current user
+const userHelpMess: String = "[color=green]user: - [/color] Returns information on the current user."
 func user(fullCommand: Array):
 	#If an incorrect number of arguments is used an error will be returned
 	if fullCommand.size() != 1:
@@ -95,6 +97,7 @@ func user(fullCommand: Array):
 
 
 #Changes the 'active user' on the current machine
+const cuHelpMess: String = "[color=green]cu:String -> username, (optional)String -> password - [/color]Changes active user on current machine."
 func changeUser(fullCommand: Array):
 	if fullCommand.size() != 2 && fullCommand.size() != 3:
 		return _error_arg_number(fullCommand.size(), 1, "cu", 1)
@@ -115,6 +118,7 @@ func changeUser(fullCommand: Array):
 
 
 #Lists 'users' on current machine
+const luHelpMess: String = "[color=green]lu: - [/color] List all users on current machine."
 func listUsers(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "user")
@@ -137,6 +141,7 @@ func listUsers(fullCommand: Array):
 
 
 #Adds a 'user' to the current machine
+const useraddHelpMess: String = "[color=green]useradd:String -> username, (optional)String -> password, (optional)String -> permissions - [/color]Adds a new user to the current machine."
 func addUser(fullCommand: Array) -> String:
 	if fullCommand.size() != 2 && fullCommand.size() != 3 && fullCommand.size() != 4:
 		return _error_arg_number(fullCommand.size(), 1, "useradd", 2)
@@ -168,6 +173,7 @@ func addUser(fullCommand: Array) -> String:
 
 
 #Lists children of the 'activeDirectory' on the current machine
+const lsHelpMess: String = "[color=green]ls: - [/color] Lists files and directories in the working directory on the current machine."
 func listItems(fullCommand: Array):
 	if fullCommand.size() != 1 && fullCommand.size() != 2:
 		return _error_arg_number(fullCommand.size(), 1, "ls", 1)
@@ -199,6 +205,7 @@ func listItems(fullCommand: Array):
 
 
 #Changes the 'activeDirectory' of the current machine
+const cdHelpMess: String = "[color=green]cd:String -> directory path('..' to go back a directory) - [/color]Changes the working directory."
 func changeDirectory(fullCommand: Array):
 	if fullCommand.size() != 2:
 		return _error_arg_number(fullCommand.size(), 1, "cd")
@@ -219,6 +226,7 @@ func changeDirectory(fullCommand: Array):
 
 
 #Creates a 'directory' with the specified details on the current machine
+const mkdirHelpMess: String = "[color=green]mkdir:String -> name, String -> parent path('.' for current directory), (optional)String -> read permissions, (optional)String -> write permissions - [/color]Creates a directory with the specified name under the parent directory."
 func makeDirectory(fullCommand: Array) -> String:
 	if fullCommand.size() < 3 || fullCommand.size() > 5:
 		return _error_arg_number(fullCommand.size(), 2, "mkdir", 2)
@@ -293,13 +301,14 @@ func remove(fullCommand: Array):
 
 
 #Connects to a 'Computer' with the specified 'id'
+const comconHelpMess: String = "[color=green]comcon:int -> ID - [/color]Connects to the computer with the specified ID. (Cannot connect to a computer on a different NetNode to home)"
 func connectComputer(fullCommand: Array):
 	if fullCommand.size() != 2:
 		return _error_arg_number(fullCommand.size(), 1, "comcon")
 	
 	#Matches the 'id' to a computer
 	var toConnect = networkManager._find_computer_by_ID(int(fullCommand[1]))
-	if toConnect == null:
+	if toConnect == null || toConnect.crashed:
 		return "Could not find a computer with ID [color=red]'%s'[/color]" % fullCommand[1]
 	if toConnect._get_connected_NetNode() != home._get_connected_NetNode():
 		return "Could connect to [color=red]'%s'[/color], computer on NetNode different to [color=cyan]home computer[/color]!" % toConnect._get_ID()
@@ -309,6 +318,7 @@ func connectComputer(fullCommand: Array):
 
 
 #Connects to the 'NetNode' with the specified id
+const nodeconHelpMess: String = "[color=green]nodecon:int -> ID - [/color]Connects to the NetNode with the specified ID. (Connecting to a different NetNode than your home computer will break the connection)"
 func connectNetNode(fullCommand: Array):
 	if fullCommand.size() != 2:
 		return _error_arg_number(fullCommand.size(), 1, "nodecon")
@@ -330,6 +340,7 @@ func connectNetNode(fullCommand: Array):
 
 
 #Returns all the 'Computers' on the 'Network'
+const scanHelpMess: String = "[color=green]scan: - [/color]Returns all computers on the connected NetNode."
 func scan(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 1, "scan")
@@ -354,7 +365,9 @@ func scan(fullCommand: Array):
 	#Formats the 'computers' into an ordered list
 	i = 0
 	listString += "\n[color=cyan]Computers:[/color]\n"
-	for comp in computers:
+	for comp: Computer in computers:
+		if comp.crashed == true:
+			continue
 		if comp == currentComputer:
 			listString += "[color=green]"
 		if comp._get_connected_NetNode() == currentComputer._get_connected_NetNode():
@@ -371,6 +384,7 @@ func scan(fullCommand: Array):
 
 
 #Returns information on the current computer
+const infoHelpMess: String = "[color=green]info: - [/color]Returns info on the current machine."
 func info(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "info")
@@ -385,8 +399,8 @@ func _is_crashed():
 	if currentComputer == home:
 		return "Home computer crashed [color=red]you lose[/color]"
 	if currentComputer != home:
-		changeComputer(home)
 		return "Computer [color=red]'%s'[/color] crashed returning to [color=green]home[/color]" % currentComputer._get_name()
+
 
 func _update_caret():
 	caret.text = currentComputer._get_active_user()._get_name() + "@" + currentComputer._get_name() + ":" + currentComputer._get_active_directory()._get_path() + ">"

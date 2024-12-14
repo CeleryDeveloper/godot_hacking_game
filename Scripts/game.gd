@@ -30,9 +30,14 @@ func _process(delta: float) -> void:
 	commandProcessor._update_caret()
 	if commandProcessor._is_crashed() != null && !lost:
 		var crashMessage = ResponseNoHistory.instantiate()
-		crashMessage.text = commandProcessor._is_crashed()
-		lost = true
-		_add_response(crashMessage)
+		if commandProcessor.currentComputer != commandProcessor.home:
+			crashMessage.text = commandProcessor._is_crashed()
+			_add_response(crashMessage)
+			commandProcessor.changeComputer(commandProcessor.home)
+		else:
+			crashMessage.text = commandProcessor._is_crashed()
+			_add_response(crashMessage)
+			lost = true
 	if Input.is_action_just_pressed("NavigateHistoryUP"):
 		_navigate_history(1)
 	if Input.is_action_just_pressed("NavigateHistoryDOWN"):
