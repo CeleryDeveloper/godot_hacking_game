@@ -12,6 +12,7 @@ const directoryPrefab = preload("res://Scenes/directory.tscn")
 
 @export var computerName: String = "NameTemp"
 @export var computerID: int = 12345
+@export var playerOwned: bool = false
 
 
 @onready var root: Directory = $Directory
@@ -21,6 +22,7 @@ const directoryPrefab = preload("res://Scenes/directory.tscn")
 
 
 var connectedNetNode: Net_Node
+var crashed: bool = false
 
 
 func _ready() -> void:
@@ -31,7 +33,7 @@ func _ready() -> void:
 #Runs on each 'refreshTimer' timeout
 func _refresh():
 	for user: User in users:
-		if root._find_directory_by_path(self, _parse_path("/users/" + user._get_name() + "/"), "/users/" + user._get_name() + "/") != null:
+		if root._find_item_by_path(self, _parse_path("/users/" + user._get_name() + "/"), "/users/" + user._get_name() + "/") != null:
 			break
 		_add_directory(user._get_name(), user._get_perms(),user._get_perms(), "/users/")
 
@@ -63,11 +65,13 @@ func _get_root() -> Directory:
 
 #Changes this machine's 'activeDirectory'
 func _set_active_directory(dirPathParsed: Array, dirPath: String) -> int:
-	var returnedDirectory: Directory = root._find_directory_by_path(self, dirPathParsed, dirPath)
-	if returnedDirectory != null && activeUser._eval_perms(returnedDirectory._get_read_perms()):
+	var returnedDirectory = root._find_item_by_path(self, dirPathParsed, dirPath)
+	if is_instance_valid(returnedDirectory) && returnedDirectory._class == "File":
+		return 2
+	if is_instance_valid(returnedDirectory) && activeUser._eval_perms(returnedDirectory._get_read_perms()):
 		activeDirectory = returnedDirectory
 		return 1
-	elif returnedDirectory != null && !activeUser._eval_perms(returnedDirectory._get_read_perms()):
+	elif is_instance_valid(returnedDirectory) && !activeUser._eval_perms(returnedDirectory._get_read_perms()):
 		return 3
 	return 2
 
@@ -79,7 +83,7 @@ func _get_active_directory() -> Directory:
 
 func _add_directory(dirName: String, dirReadPerms: String,dirWritePerms: String, parentPath: String):
 	var newDir: Directory = directoryPrefab.instantiate()
-	var parent: Directory = root._find_directory_by_path(self ,_parse_path(parentPath), parentPath)
+	var parent: Directory = root._find_item_by_path(self ,_parse_path(parentPath), parentPath)
 	if !is_instance_valid(parent):
 		return false
 	newDir._set_name(dirName)
@@ -88,12 +92,12 @@ func _add_directory(dirName: String, dirReadPerms: String,dirWritePerms: String,
 	parent.add_child(newDir)
 
 
-func _remove_directory(parsedPath: Array, Path: String):
-	var returnedDirectory: Directory = root._find_directory_by_path(self, parsedPath, Path)
-	if returnedDirectory != null && activeUser._eval_perms(returnedDirectory._get_write_perms()):
-		returnedDirectory.queue_free()
+func _remove_item(parsedPath: Array, Path: String):
+	var returnedItem = root._find_item_by_path(self, parsedPath, Path)
+	if returnedItem != null && activeUser._eval_perms(returnedItem._get_write_perms()):
+		returnedItem._remove_self()
 		return 1
-	elif returnedDirectory != null && !activeUser._eval_perms(returnedDirectory._get_write_perms()):
+	elif returnedItem != null && !activeUser._eval_perms(returnedItem._get_write_perms()):
 		return 3
 	return 2
 
@@ -170,3 +174,8 @@ func _get_connected_NetNode() -> Net_Node:
 func _connect_NetNode(newNode: Net_Node):
 	connectedNetNode = newNode
 	connectedNetNode._add_computer(self)
+
+
+#Crashes the current computer
+func _crash():
+	crashed = true

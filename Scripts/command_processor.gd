@@ -1,5 +1,5 @@
 extends Node
-
+class_name CommandProcessor
 
 var currentComputer: Computer = null
 var commandHistory: Array[String]
@@ -16,6 +16,9 @@ func _initialize(startingComputer):
 
 
 func _process_command(input: String) -> String:
+	if currentComputer.crashed:
+		return "Current computer is [color=red]inoperational[/color]!"
+	
 	#Stores the command in 'commandHistory'
 	commandHistory.insert(0, input)
 	if commandHistory.size() > 30:
@@ -53,7 +56,7 @@ func _process_command(input: String) -> String:
 		"lu":
 			return listUsers(commandParsed)
 		"ls":
-			return listFiles(commandParsed)
+			return listItems(commandParsed)
 		"cd":
 			return changeDirectory(commandParsed)
 		"mkdir":
@@ -165,27 +168,32 @@ func addUser(fullCommand: Array) -> String:
 
 
 #Lists children of the 'activeDirectory' on the current machine
-func listFiles(fullCommand: Array):
+func listItems(fullCommand: Array):
 	if fullCommand.size() != 1 && fullCommand.size() != 2:
 		return _error_arg_number(fullCommand.size(), 1, "ls", 1)
 	
 	#String initialized here for formatting later
 	var fileListString: String
-	#Gets the array of 'users' from the current machine
-	var files = currentComputer._get_active_directory()._get_children()
+	#Gets the array of items from the active directory
+	var items = currentComputer._get_active_directory()._get_children()
 	#Formats the 'users' into an ordered list
-	for i in range(files.size()):
-		if !is_instance_valid(files[i]):
+	for i in range(items.size()):
+		if !is_instance_valid(items[i]):
 			continue
-		fileListString += str(i + 1) + ". " + "[color=green]" + files[i]._get_name() + ":[/color] "
-		if currentComputer._get_active_user()._eval_perms(files[i]._get_read_perms()):
-			fileListString += "[color=green]" + files[i]._get_read_perms() + "[/color], "
+		if items[i]._class == "File":
+			fileListString += str(i + 1) + ". " + "[color=green]" + items[i]._get_name() + items[i]._get_extension() + ":[/color] "
+		else:	
+			fileListString += str(i + 1) + ". " + "[color=green]" + items[i]._get_name() + ":[/color] "
+			
+		if currentComputer._get_active_user()._eval_perms(items[i]._get_read_perms()):
+			fileListString += "[color=green]" + items[i]._get_read_perms() + "[/color], "
 		else:
-			fileListString += "[color=red]" + files[i]._get_read_perms() + "[/color], "
-		if currentComputer._get_active_user()._eval_perms(files[i]._get_write_perms()):
-			fileListString += "[color=green]" + files[i]._get_write_perms() + "[/color]\n"
+			fileListString += "[color=red]" + items[i]._get_read_perms() + "[/color], "
+			
+		if currentComputer._get_active_user()._eval_perms(items[i]._get_write_perms()):
+			fileListString += "[color=green]" + items[i]._get_write_perms() + "[/color]\n"
 		else:
-			fileListString += "[color=red]" + files[i]._get_write_perms() + "[/color]\n"
+			fileListString += "[color=red]" + items[i]._get_write_perms() + "[/color]\n"
 	
 	return fileListString
 
@@ -233,7 +241,7 @@ func makeDirectory(fullCommand: Array) -> String:
 		pathString += "/"
 	
 	#Checks if the same 'directory' already exists
-	if currentComputer._get_root()._find_directory_by_path(currentComputer, _parse_path(pathString + dirName + "/"), pathString + dirName + "/"):
+	if currentComputer._get_root()._find_item_by_path(currentComputer, _parse_path(pathString + dirName + "/"), pathString + dirName + "/"):
 		return "directory with path [color=red]'%s'[/color] already exists!" % [pathString + dirName + "/"]
 	
 	#Checks if the 'activeUser' has permission to create the 'directory'
@@ -270,13 +278,15 @@ func remove(fullCommand: Array):
 	if pathString == "/":
 		return "Cannot delete [color=red]'/'[/color] directory!"
 	
-	if currentComputer._get_active_directory() == currentComputer._get_root()._find_directory_by_path(currentComputer, _parse_path(pathString), pathString):
+	var toRemove = currentComputer._get_root()._find_item_by_path(currentComputer, _parse_path(pathString), pathString)
+	
+	if currentComputer._get_active_directory() == toRemove:
 		currentComputer._set_active_directory(_parse_path("/"), "/")
 	
-	var success = currentComputer._remove_directory(_parse_path(pathString), pathString)
+	var success = currentComputer._remove_item(_parse_path(pathString), pathString)
 	
 	if success == 1:
-		return "Removed directory [color=green]'%s'[/color]" % pathString
+		return "Removed '%s' [color=green]'%s'[/color]" % [toRemove._class.to_lower(), pathString]
 	elif success == 3:
 		return "User [color=red]'%s'[/color] does not have permission to remove [color=green]'%s'[/color]" % [currentComputer._get_active_user()._get_name(), fullCommand[1]]
 	return "No directory with name [color=red]'%s'[/color] was found!" % fullCommand[1]
@@ -368,6 +378,15 @@ func info(fullCommand: Array):
 	return "Computer name: [color=green]'%s'[/color] \nComputer ID: [color=green]'%s'[/color] \nNetNode name: [color=green]'%s'[/color] \nNetNode ID: [color=green]'%s'[/color]" % [currentComputer._get_name(), currentComputer._get_ID(), currentComputer._get_connected_NetNode()._get_name(), currentComputer._get_connected_NetNode()._get_ID()]
 #End of command functions
 
+
+func _is_crashed():
+	if !currentComputer.crashed:
+		return null
+	if currentComputer == home:
+		return "Home computer crashed [color=red]you lose[/color]"
+	if currentComputer != home:
+		changeComputer(home)
+		return "Computer [color=red]'%s'[/color] crashed returning to [color=green]home[/color]" % currentComputer._get_name()
 
 func _update_caret():
 	caret.text = currentComputer._get_active_user()._get_name() + "@" + currentComputer._get_name() + ":" + currentComputer._get_active_directory()._get_path() + ">"

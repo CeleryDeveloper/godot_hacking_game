@@ -40,6 +40,7 @@ maxComputers = 100
 [node name="Computer" parent="NetworkManager" instance=ExtResource("3_xo6vp")]
 computerName = "home"
 computerID = 192324
+playerOwned = true
 
 [node name="Terminal" type="PanelContainer" parent="."]
 layout_mode = 1

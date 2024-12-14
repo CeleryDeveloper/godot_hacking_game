@@ -43,6 +43,7 @@ func _get_path() -> String:
 	return path
 
 
+#Sets this directory's read perms
 func _set_read_perms(newPerms: String):
 	readPerms = newPerms
 
@@ -52,6 +53,7 @@ func _get_read_perms() -> String:
 	return readPerms
 
 
+#Sets this directory's write perms
 func _set_write_perms(newPerms: String):
 	writePerms = newPerms
 
@@ -77,14 +79,23 @@ func _refresh_connected_children():
 			children.append(child)
 
 
-#Finds a 'directory' with the same name
-func _find_directory_by_path(parentComp: Computer, dirPathParsed: Array, dirPath: String) -> Directory:
-	if dirPath == ".." && parentComp.activeDirectory.get_parent()._class == "Directory":
+#Finds a 'directory' or 'file' with the provided 'path'
+func _find_item_by_path(parentComp: Computer, pathParsed: Array, pathIn: String):
+	if pathIn == ".." && parentComp.activeDirectory.get_parent()._class == "Directory":
 		return parentComp.activeDirectory.get_parent()
-	if dirPath == path:
+	if pathIn == path:
 		return self
 	var selfParsed = parentComp._parse_path(path)
 	for child in children:
-		if is_instance_valid(child) && child._class == "Directory" && child._get_name() == dirPathParsed[selfParsed.size()]:
-			return child._find_directory_by_path(parentComp, dirPathParsed, dirPath)
+		if is_instance_valid(child) && child._class == "Directory" && child._get_name() == pathParsed[selfParsed.size()]:
+			return child._find_item_by_path(parentComp, pathParsed, pathIn)
+		elif is_instance_valid(child) && child._class == "File" && child._get_name() + child._get_extension() == pathParsed[selfParsed.size()]:
+			return child
 	return null
+
+
+#Removes this 'directory' from the scene
+func _remove_self():
+	for child in children:
+		child._remove_self()
+	queue_free()

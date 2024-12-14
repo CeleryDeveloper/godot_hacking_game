@@ -5,10 +5,11 @@ const Response = preload("res://Scenes/response.tscn")
 
 var maxScrollLength = 0
 var historyPos: int = -1
+var lost: bool = false
 
 @export var maxHistory: int = 30
 
-@onready var commandProcessor = $CommandProcessor
+@onready var commandProcessor:CommandProcessor = $CommandProcessor
 @onready var terminalHistory = $Terminal/MarginContainer/Rows/Stdout/ScrollContainer/TerminalHistory
 @onready var scroll = $Terminal/MarginContainer/Rows/Stdout/ScrollContainer
 @onready var scrollBar = scroll.get_v_scroll_bar()
@@ -27,6 +28,11 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	commandProcessor._update_caret()
+	if commandProcessor._is_crashed() != null && !lost:
+		var crashMessage = ResponseNoHistory.instantiate()
+		crashMessage.text = commandProcessor._is_crashed()
+		lost = true
+		_add_response(crashMessage)
 	if Input.is_action_just_pressed("NavigateHistoryUP"):
 		_navigate_history(1)
 	if Input.is_action_just_pressed("NavigateHistoryDOWN"):
