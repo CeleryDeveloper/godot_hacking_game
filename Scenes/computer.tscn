@@ -30,6 +30,7 @@ directoryName = "sys"
 
 [node name="File" parent="Directory/Directory5" node_paths=PackedStringArray("parentComputer") instance=ExtResource("3_2w82d")]
 integralFile = true
+printable = true
 parentComputer = NodePath("../../..")
 
 [node name="Directory6" parent="Directory" instance=ExtResource("2_g2ti6")]

@@ -61,6 +61,8 @@ func _process_command(input: String) -> String:
 			return changeDirectory(commandParsed)
 		"mkdir":
 			return makeDirectory(commandParsed)
+		"cat":
+			return readFile(commandParsed)
 		"rm":
 			return remove(commandParsed)
 		"scan":
@@ -83,7 +85,7 @@ func help(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "help")
 
-	return helpHelpMess + "\n" + userHelpMess + "\n" + luHelpMess + "\n" + lsHelpMess + "\n" + infoHelpMess + "\n" + scanHelpMess + "\n" + comconHelpMess + "\n" + nodeconHelpMess + "\n" + cuHelpMess + "\n " + useraddHelpMess + "\n" + cdHelpMess + "\n" + mkdirHelpMess
+	return helpHelpMess + "\n" + userHelpMess + "\n" + luHelpMess + "\n" + lsHelpMess + "\n" + infoHelpMess + "\n" + scanHelpMess + "\n" + comconHelpMess + "\n" + nodeconHelpMess + "\n" + cuHelpMess + "\n " + useraddHelpMess + "\n" + cdHelpMess + "\n" + mkdirHelpMess + "\n" + rmHelpMess + "\n" + catHelpMess
 
 
 #Displays information on the current user
@@ -113,6 +115,9 @@ func changeUser(fullCommand: Array):
 	
 	#If result is true the 'active user' is changed, else return error
 	if result:
+		#Sets 'active directory' to home if the new user doesn't meet permissions
+		if !currentComputer._get_active_user()._eval_perms(currentComputer._get_active_directory()._get_read_perms()):
+			currentComputer._set_active_directory(_parse_path("/"), "/")
 		return "Changed to user [color=green]'%s'[/color]." % fullCommand[1]
 	return "command failed, incorrect [color=red]password[/color] or user [color=red]'%s'[/color] does not exist!" % fullCommand[1]
 
@@ -271,7 +276,32 @@ func makeDirectory(fullCommand: Array) -> String:
 	return "Created directory [color=green]'%s'[/color]!" % [pathString + dirName + "/"]
 
 
+#Prints a file with the specified path
+const catHelpMess: String = "[color=green]cat:String -> path -[/color] Prints the content of the specified file."
+func readFile(fullCommand: Array):
+	if fullCommand.size() != 2:
+		return _error_arg_number(fullCommand.size(), 1, "cat")
+	
+	var item = currentComputer._get_root()._find_item_by_path(currentComputer, _parse_path(fullCommand[1]), fullCommand[1])
+	
+	#Returns error if 'item' is not valid
+	if !is_instance_valid(item):
+		return "File with specified path does not exist!"
+	#Returns error if 'item' is a directory
+	if item._class == "Directory":
+		return "Cannot cat a [color=red]directory[/color]!"
+	#Returns error if 'item' is not a printable file
+	if !item._get_printable():
+		return "This file is not printable!"
+	#Returns error if 'user' does not meet permissions
+	if !currentComputer._get_active_user()._eval_perms(item._get_read_perms()):
+		return "User [color=red]'%s'[/color] does not have permission to view this file!" % currentComputer._get_active_user()._get_name()
+	
+	return item._get_content()
+
+
 #Removes a 'file' or 'directory' on the current machine
+const rmHelpMess = "[color=green]rm:string -> path -[/color] Removes the file or directory with the specified path."
 func remove(fullCommand: Array):
 	if fullCommand.size() != 2:
 		return _error_arg_number(fullCommand.size(), 1, "rm")

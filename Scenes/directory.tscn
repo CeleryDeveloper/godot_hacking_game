@@ -8,5 +8,5 @@ script = ExtResource("1_hul1s")
 [node name="refreshTimer" type="Timer" parent="."]
 autostart = true
 
-[connection signal="timeout" from="refreshTimer" to="." method="_update_path"]
 [connection signal="timeout" from="refreshTimer" to="." method="_refresh_connected_children"]
+[connection signal="timeout" from="refreshTimer" to="." method="_update_path"]

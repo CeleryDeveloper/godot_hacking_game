@@ -7,10 +7,12 @@ var _class = "File"
 
 
 @export var fileName: String = "system31"
-@export var fileExtension: String = ".dll"
+@export var fileExtension: String = ".sys"
+@export var fileContent: String = "Debug"
 @export var readPerms: String = "root"
 @export var writePerms: String = "root"
 @export var integralFile: bool = false
+@export var printable: bool = false
 @export var parentComputer: Computer = null
 
 var path: String = "/"
@@ -38,6 +40,26 @@ func _set_extension(newExe: String):
 #Returns this file's extension
 func _get_extension() -> String:
 	return fileExtension
+
+
+#Sets this file's content
+func _set_content(newContent: String):
+	fileContent = newContent
+
+
+#Returns this file's content
+func _get_content() -> String:
+	return fileContent
+
+
+#Set's this file's printable attribute
+func _set_printable(newBool: bool):
+	printable = newBool
+
+
+#Returns this file's printable attribute
+func _get_printable() -> bool:
+	return printable
 
 
 #Sets this file's read perms
