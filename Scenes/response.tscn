@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://b3yeq301bt5ix"]
 
-[ext_resource type="Script" path="res://Scripts/response.gd" id="1_mphob"]
+[ext_resource type="Script" uid="uid://byypb0h314hax" path="res://Scripts/response.gd" id="1_mphob"]
 [ext_resource type="FontFile" uid="uid://67rccbw0m8xx" path="res://Fonts/VT323/VT323-Regular.ttf" id="2_a3lgw"]
 [ext_resource type="PackedScene" uid="uid://o576a8punt3m" path="res://Scenes/responseNoHistory.tscn" id="2_wi21m"]
 

@@ -1,9 +1,9 @@
 [gd_scene load_steps=12 format=3 uid="uid://flpjnlaxcsla"]
 
-[ext_resource type="Script" path="res://Scripts/game.gd" id="1_36ffd"]
-[ext_resource type="Script" path="res://Scripts/input.gd" id="1_h1hun"]
-[ext_resource type="Script" path="res://Scripts/command_processor.gd" id="2_5aoqe"]
-[ext_resource type="Script" path="res://Scripts/network_manager.gd" id="3_5u0fr"]
+[ext_resource type="Script" uid="uid://qv8havl8xytj" path="res://Scripts/game.gd" id="1_36ffd"]
+[ext_resource type="Script" uid="uid://dw1b56x7des5o" path="res://Scripts/input.gd" id="1_h1hun"]
+[ext_resource type="Script" uid="uid://bl7p65pe8kk4b" path="res://Scripts/command_processor.gd" id="2_5aoqe"]
+[ext_resource type="Script" uid="uid://bhx7f4634pv42" path="res://Scripts/network_manager.gd" id="3_5u0fr"]
 [ext_resource type="PackedScene" uid="uid://dmjje3pjfprba" path="res://Scenes/computer.tscn" id="3_xo6vp"]
 [ext_resource type="FontFile" uid="uid://67rccbw0m8xx" path="res://Fonts/VT323/VT323-Regular.ttf" id="5_wrohv"]
 

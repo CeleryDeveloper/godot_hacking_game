@@ -3,15 +3,16 @@ class_name CommandProcessor
 
 var currentComputer: Computer = null
 var commandHistory: Array[String]
+var home: Computer
 
 
-@onready var home: Computer = $"../NetworkManager/Computer"
 @onready var networkManager: Network_Manager = $"../NetworkManager"
 @onready var caret: Label = $"../Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Caret"
 
 
 func _initialize(startingComputer):
 	currentComputer = startingComputer
+	home = startingComputer
 	currentComputer._connect_NetNode(networkManager._get_netNodes().pick_random())
 
 
@@ -34,9 +35,6 @@ func _process_command(input: String) -> String:
 	#If 'commandParsed' has any arguments runs the '_parse_command_args' function
 	if commandParsed.size() > 1:
 		commandParsed = _parse_command_args(commandParsed)
-
-	print(commandParsed.size())
-	print(commandParsed)
 	
 	#Gets the actual 'command' with no arguments from 'commandParsed'
 	var command = commandParsed[0].strip_edges()
@@ -82,6 +80,7 @@ func _process_command(input: String) -> String:
 #Displays a list of all available commands
 const helpHelpMess: String = "[color=green]help: - [/color] Returns this list of commands."
 func help(fullCommand: Array):
+	#If an incorrect number of arguments is used an error will be returned, this is used in every command
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "help")
 
@@ -91,7 +90,6 @@ func help(fullCommand: Array):
 #Displays information on the current user
 const userHelpMess: String = "[color=green]user: - [/color] Returns information on the current user."
 func user(fullCommand: Array):
-	#If an incorrect number of arguments is used an error will be returned
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "user")
 	
