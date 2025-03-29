@@ -9,4 +9,3 @@ func _ready() -> void:
 #Clears "input" when a value is submitted
 func _on_text_submitted(new_text: String) -> void:
 	clear()
-	grab_focus()
