@@ -162,7 +162,7 @@ func addUser(fullCommand: Array) -> String:
 	username = fullCommand[1]
 	perms = username
 	
-	if fullCommand.size() == 3:
+	if fullCommand.size() >= 3:
 		password = fullCommand[2]
 	if fullCommand.size() == 4:
 		perms = fullCommand[3]
