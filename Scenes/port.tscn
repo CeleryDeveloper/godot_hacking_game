@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dndqeee4iysa2"]
+
+[ext_resource type="Script" uid="uid://4iwoad4uvgkx" path="res://Scripts/port.gd" id="1_hmkwh"]
+
+[node name="Port" type="Node"]
+script = ExtResource("1_hmkwh")

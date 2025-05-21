@@ -8,6 +8,7 @@ var _class = "Computer"
 
 const userPrefab = preload("res://Scenes/user.tscn")
 const directoryPrefab = preload("res://Scenes/directory.tscn")
+const portPrefab = preload("res://Scenes/port.tscn")
 
 
 @export var computerName: String = "NameTemp"
@@ -18,8 +19,8 @@ const directoryPrefab = preload("res://Scenes/directory.tscn")
 @onready var root: Directory = $Directory
 @onready var activeDirectory: Directory = root
 @onready var users: Array = [$User, $User2]
+@onready var ports: Array = [$Port]
 @onready var activeUser: User = users[1]
-
 
 var connectedNetNode: Net_Node
 var crashed: bool = false
@@ -129,6 +130,15 @@ func _add_user(newUserName: String, password: String = "", perms: String = "gues
 	return true
 
 
+func _add_port(newPortNumber: int) -> bool:
+	var newPort: Port = portPrefab.instantiate()
+	for port: Port in ports:
+		if port._get_number() == newPortNumber:
+			return false
+	newPort._set_number(newPortNumber)
+	self.add_child(newPort)
+	return true
+
 #Removes a 'user' from this machine, returns false if failure
 func _remove_user(user: String) -> bool:
 	var toRemove = users.find(user)
@@ -164,6 +174,9 @@ func _set_active_user(userName: String, password: String = "") -> bool:
 		return true
 	return false
 
+#Returns Array of this machine's 'ports'
+func _get_ports() -> Array:
+	return ports
 
 #Returns the 'connectedNetNode'
 func _get_connected_NetNode() -> Net_Node:
