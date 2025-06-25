@@ -93,10 +93,10 @@ func _batch_gen():
 		print("%s Total computers!" % len(connectedComputers))
 
 #Generates a 'computer' with the specified information
-func _generate_computer(ID: int, name: String) -> Computer:
+func _generate_computer(ID: int, computerName: String) -> Computer:
 	var newComputer = computerPrefab.instantiate()
 	newComputer._set_ID(ID)
-	newComputer._set_name(name)
+	newComputer._set_name(computerName)
 	connectedComputers.append(newComputer)
 	add_child(newComputer)
 	newComputer._connect_NetNode(connectedNetNodes.pick_random())
@@ -113,7 +113,7 @@ func _random_computer():
 		mainUser += str(randi_range(1, 99))
 	
 	if randi_range(1, 4) == 1:
-		computerName += mainUser + "'s"
+		computerName = mainUser + "'s"
 	if randi_range(1, 2) == 1:
 		computerName += computerNameGenPrefix.pick_random()
 	
@@ -144,11 +144,11 @@ func _random_computer():
 	#Generates a second user
 	if randi_range(1, 3) == 1:
 		var secondUser = computerUserGen.pick_random()
-		var secondUserPerms
+		var _secondUserPerms
 		if randi_range(1, 4) == 1:
-			secondUserPerms = "root"
+			_secondUserPerms = "root"
 		else:
-			secondUserPerms = secondUser
+			_secondUserPerms = secondUser
 		if randi_range(1, 4):
 			secondUser += str(randi_range(1, 99))
 		var secondPassword = ""
@@ -158,10 +158,10 @@ func _random_computer():
 
 
 #Generates a 'NetNode' with the specified information
-func _generate_NetNode(ID: int, name: String, company: String) -> Net_Node:
+func _generate_NetNode(ID: int, netNodeName: String, company: String) -> Net_Node:
 	var newNetNode = netNodePrefab.instantiate()
 	newNetNode._set_ID(ID)
-	newNetNode._set_name(name)
+	newNetNode._set_name(netNodeName)
 	newNetNode._set_corp(company)
 	connectedNetNodes.append(newNetNode)
 	add_child(newNetNode)
@@ -171,8 +171,7 @@ func _generate_NetNode(ID: int, name: String, company: String) -> Net_Node:
 #Randomly generates a 'computer'
 func _random_NetNode():
 	var companyName: String = netNodeCompanyNameGen.pick_random()
-	var netNodeName: String
-	var password: String = ""
+	var netNodeName: String = ""
 	
 	if randi_range(1, 4) == 1:
 		netNodeName += companyName
@@ -189,13 +188,12 @@ func _random_NetNode():
 	while(_find_computer_by_ID(newID) != null):
 		newID = randi_range(1, 999)
 	
-	var netNode = _generate_NetNode(newID, netNodeName, companyName)
+	_generate_NetNode(newID, netNodeName, companyName)
 
 
 #Randomly generates a 'password'
 func _random_password(userName: String = "") -> String:
-	var password: String
-	
+	var password: String = ""
 	
 	if randi_range(1, 5) == 1:
 		password += userName

@@ -46,7 +46,7 @@ func _process_command(input: String) -> String:
 		"man":
 			return help(commandParsed)
 		"user":
-			return user(commandParsed)
+			return userInfo(commandParsed)
 		"cu":
 			return changeUser(commandParsed)
 		"useradd":
@@ -89,7 +89,7 @@ func help(fullCommand: Array):
 
 #Displays information on the current user
 const userHelpMess: String = "[color=green]user: - [/color] Returns information on the current user."
-func user(fullCommand: Array):
+func userInfo(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "user")
 	
@@ -127,7 +127,7 @@ func listUsers(fullCommand: Array):
 		return _error_arg_number(fullCommand.size(), 0, "user")
 	
 	#String initialized here for formatting later
-	var userListString: String
+	var userListString: String = ""
 	#Gets the array of 'users' from the current machine
 	var users = currentComputer._get_users()
 	
@@ -182,7 +182,7 @@ func listItems(fullCommand: Array):
 		return _error_arg_number(fullCommand.size(), 1, "ls", 1)
 	
 	#String initialized here for formatting later
-	var fileListString: String
+	var fileListString: String = ""
 	#Gets the array of items from the active directory
 	var items = currentComputer._get_active_directory()._get_children()
 	#Formats the 'users' into an ordered list
@@ -374,7 +374,7 @@ func scan(fullCommand: Array):
 		return _error_arg_number(fullCommand.size(), 1, "scan")
 	
 	#String initialized here for formatting later
-	var listString: String
+	var listString: String = ""
 	#Gets the array of 'computers' from the network
 	var computers = currentComputer._get_connected_NetNode()._get_computers()
 	var netNodes = networkManager._get_netNodes()
