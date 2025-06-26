@@ -1,4 +1,5 @@
 extends Control
+class_name Game
 
 const ResponseNoHistory = preload("res://Scenes/responseNoHistory.tscn")
 const Response = preload("res://Scenes/response.tscn")
@@ -6,6 +7,8 @@ const Response = preload("res://Scenes/response.tscn")
 var maxScrollLength = 0
 var historyPos: int = -1
 var lost: bool = false
+#The time in minutes from 8
+var time: int = 0
 
 #Dosn't apply to _navigate_history, only Response nodes
 @export var maxHistory: int = 30
@@ -53,6 +56,10 @@ func _process(_delta: float) -> void:
 		_navigate_history(1)
 	if Input.is_action_just_pressed("NavigateHistoryDOWN"):
 		_navigate_history(-1)
+
+
+func _time():
+	time += 1
 
 
 #Navigates the history of inputs using arrow keys

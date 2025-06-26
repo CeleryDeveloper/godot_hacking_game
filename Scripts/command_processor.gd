@@ -8,7 +8,7 @@ var home: Computer
 
 @onready var networkManager: Network_Manager = $"../NetworkManager"
 @onready var caret: Label = $"../Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Caret"
-
+@onready var game: Game = $".."
 
 func _initialize(startingComputer):
 	currentComputer = startingComputer
@@ -71,6 +71,8 @@ func _process_command(input: String) -> String:
 			return connectNetNode(commandParsed)
 		"info":
 			return info(commandParsed)
+		"time":
+			return time(commandParsed)
 		#Default case if 'command' is not recognized
 		_:
 			return "command [color=red]'%s'[/color] was not recognized!" % command
@@ -418,6 +420,18 @@ func info(fullCommand: Array):
 		return _error_arg_number(fullCommand.size(), 0, "info")
 	
 	return "Computer name: [color=green]'%s'[/color] \nComputer ID: [color=green]'%s'[/color] \nNetNode name: [color=green]'%s'[/color] \nNetNode ID: [color=green]'%s'[/color]" % [currentComputer._get_name(), currentComputer._get_ID(), currentComputer._get_connected_NetNode()._get_name(), currentComputer._get_connected_NetNode()._get_ID()]
+
+
+#Returns the current time
+const timeHelpMess: String = "[color=green]time: - [/color]Returns the current time in 24hr format"
+func time(fullCommand: Array):
+	var currentTime: int = game.time
+	#Makes sure day starts at 8am
+	currentTime += 480
+	var currentHours: float = currentTime / 60
+	var timeString: String = str(int(floor(currentHours))) + ":" + str(currentTime - int(currentHours) * 60).pad_zeros(2)
+	#Makes the time look correct with 24hr formating
+	return "Time: [color=green]'%s'[/color]" %[timeString]
 #End of command functions
 
 

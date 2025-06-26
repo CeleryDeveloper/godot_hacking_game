@@ -108,6 +108,10 @@ script = ExtResource("1_h1hun")
 wait_time = 0.05
 autostart = true
 
+[node name="MinuteTimer" type="Timer" parent="."]
+autostart = true
+
 [connection signal="text_submitted" from="Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input" to="." method="_on_input_text_submitted"]
 [connection signal="text_submitted" from="Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input" to="Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input" method="_on_text_submitted"]
 [connection signal="timeout" from="BatchTimer" to="NetworkManager" method="_batch_gen"]
+[connection signal="timeout" from="MinuteTimer" to="." method="_time"]
