@@ -1,8 +1,9 @@
 extends Node
 class_name Network_Manager
 
-
-var _class = "Network_Manager"
+#Stores the custom 'class_name' 
+#as there is no way to access the name declared using the 'class_name' keyword
+const _class = "Network_Manager"
 
 const computerPrefab = preload("res://Scenes/computer.tscn")
 const netNodePrefab = preload("res://Scenes/net_node.tscn")

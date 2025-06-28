@@ -1,9 +1,9 @@
 extends Node
 class_name User
 
-
-#Stores the custom 'class_name'
-var _class = "User"
+#Stores the custom 'class_name' 
+#as there is no way to access the name declared using the 'class_name' keyword
+const _class = "User"
 
 
 @export var userName: String = "root"

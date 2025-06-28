@@ -1,8 +1,9 @@
 extends Node
 class_name Net_Node
 
-
-var _class = "Net_Node"
+#Stores the custom 'class_name' 
+#as there is no way to access the name declared using the 'class_name' keyword
+const _class = "Net_Node"
 
 @export var company: String = "TEMPCORP"
 @export var nodeName: String = "NameTemp"

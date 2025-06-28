@@ -8,7 +8,7 @@ var home: Computer
 
 @onready var networkManager: Network_Manager = $"../NetworkManager"
 @onready var caret: Label = $"../Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Caret"
-@onready var game: Game = $".."
+@onready var timeManger: TimeManager = $"../TimeManager"
 
 func _initialize(startingComputer):
 	currentComputer = startingComputer
@@ -86,7 +86,7 @@ func help(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "help")
 
-	return helpHelpMess + "\n" + userHelpMess + "\n" + luHelpMess + "\n" + lsHelpMess + "\n" + infoHelpMess + "\n" + scanHelpMess + "\n" + comconHelpMess + "\n" + nodeconHelpMess + "\n" + cuHelpMess + "\n " + useraddHelpMess + "\n" + cdHelpMess + "\n" + mkdirHelpMess + "\n" + rmHelpMess + "\n" + catHelpMess
+	return helpHelpMess + "\n" + userHelpMess + "\n" + luHelpMess + "\n" + lsHelpMess + "\n" + infoHelpMess + "\n" + timeHelpMess + "\n" + scanHelpMess + "\n" + comconHelpMess + "\n" + nodeconHelpMess + "\n" + cuHelpMess + "\n " + useraddHelpMess + "\n" + cdHelpMess + "\n" + mkdirHelpMess + "\n" + rmHelpMess + "\n" + catHelpMess
 
 
 #Displays information on the current user
@@ -425,12 +425,7 @@ func info(fullCommand: Array):
 #Returns the current time
 const timeHelpMess: String = "[color=green]time: - [/color]Returns the current time in 24hr format"
 func time(fullCommand: Array):
-	var currentTime: int = game.time
-	#Makes sure day starts at 8am
-	currentTime += 480
-	var currentHours: float = currentTime / 60
-	var timeString: String = str(int(floor(currentHours))) + ":" + str(currentTime - int(currentHours) * 60).pad_zeros(2)
-	#Makes the time look correct with 24hr formating
+	var timeString = timeManger._get_time_formated()
 	return "Time: [color=green]'%s'[/color]" %[timeString]
 #End of command functions
 
