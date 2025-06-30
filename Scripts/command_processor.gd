@@ -13,7 +13,7 @@ var home: Computer
 func _initialize(startingComputer):
 	currentComputer = startingComputer
 	home = startingComputer
-	currentComputer._connect_NetNode(networkManager._get_netNodes().pick_random())
+	currentComputer.connect_NetNode(networkManager.get_netNodes().pick_random())
 
 
 func _process_command(input: String) -> String:
@@ -73,6 +73,8 @@ func _process_command(input: String) -> String:
 			return info(commandParsed)
 		"time":
 			return time(commandParsed)
+		"shutdown":
+			return shutdown(commandParsed)
 		#Default case if 'command' is not recognized
 		_:
 			return "command [color=red]'%s'[/color] was not recognized!" % command
@@ -86,7 +88,7 @@ func help(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "help")
 
-	return helpHelpMess + "\n" + userHelpMess + "\n" + luHelpMess + "\n" + lsHelpMess + "\n" + infoHelpMess + "\n" + timeHelpMess + "\n" + scanHelpMess + "\n" + comconHelpMess + "\n" + nodeconHelpMess + "\n" + cuHelpMess + "\n " + useraddHelpMess + "\n" + cdHelpMess + "\n" + mkdirHelpMess + "\n" + rmHelpMess + "\n" + catHelpMess
+	return helpHelpMess + "\n" + userHelpMess + "\n" + luHelpMess + "\n" + lsHelpMess + "\n" + infoHelpMess + "\n" + timeHelpMess + "\n" + scanHelpMess + "\n" + comconHelpMess + "\n" + nodeconHelpMess + "\n" + cuHelpMess + "\n" + useraddHelpMess + "\n" + cdHelpMess + "\n" + mkdirHelpMess + "\n" + rmHelpMess + "\n" + catHelpMess + "\n" + shutdownHelpMess
 
 
 #Displays information on the current user
@@ -95,7 +97,7 @@ func userInfo(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "user")
 	
-	return "Current user: [color=green]'%s'[/color] \nUser password: [color=green]'%s'[/color] \nUser perms: [color=green]'%s'[/color]" % [currentComputer._get_active_user()._get_name(), currentComputer._get_active_user()._get_password(), currentComputer._get_active_user()._get_perms()]
+	return "Current user: [color=green]'%s'[/color] \nUser password: [color=green]'%s'[/color] \nUser perms: [color=green]'%s'[/color]" % [currentComputer.get_active_user().get_user_name(), currentComputer.get_active_user().get_password(), currentComputer.get_active_user().get_perms()]
 
 
 #Changes the 'active user' on the current machine
@@ -109,15 +111,15 @@ func changeUser(fullCommand: Array):
 	
 	#Only passes 'password' argument if a 'password' was specified, if not the password is empty by default
 	if fullCommand.size() == 2:
-		result = currentComputer._set_active_user(fullCommand[1])
+		result = currentComputer.set_active_user(fullCommand[1])
 	else:
-		result = currentComputer._set_active_user(fullCommand[1], fullCommand[2])
+		result = currentComputer.set_active_user(fullCommand[1], fullCommand[2])
 	
 	#If result is true the 'active user' is changed, else return error
 	if result:
 		#Sets 'active directory' to home if the new user doesn't meet permissions
-		if !currentComputer._get_active_user()._eval_perms(currentComputer._get_active_directory()._get_read_perms()):
-			currentComputer._set_active_directory(_parse_path("/"), "/")
+		if !currentComputer.get_active_user().eval_perms(currentComputer.get_active_directory().get_read_perms()):
+			currentComputer.set_active_directory(_parse_path("/"), "/")
 		return "Changed to user [color=green]'%s'[/color]." % fullCommand[1]
 	return "command failed, incorrect [color=red]password[/color] or user [color=red]'%s'[/color] does not exist!" % fullCommand[1]
 
@@ -131,16 +133,16 @@ func listUsers(fullCommand: Array):
 	#String initialized here for formatting later
 	var userListString: String = ""
 	#Gets the array of 'users' from the current machine
-	var users = currentComputer._get_users()
+	var users = currentComputer.get_users()
 	
 	#Formats the 'users' into an ordered list
 	for i in range(users.size()):
-		if users[i] == currentComputer._get_active_user():
+		if users[i] == currentComputer.get_active_user():
 			userListString += "[color=green]"
-		userListString += str(i + 1) + ". " + users[i]._get_name() + ": "
-		if users[i] == currentComputer._get_active_user():
+		userListString += str(i + 1) + ". " + users[i].get_user_name() + ": "
+		if users[i] == currentComputer.get_active_user():
 			userListString += "[/color]"
-		userListString += users[i]._get_password() + "\n"
+		userListString += users[i].get_password() + "\n"
 	
 	return userListString
 
@@ -155,11 +157,11 @@ func addUser(fullCommand: Array) -> String:
 	var password = ""
 	var perms = ""
 	
-	if currentComputer._get_active_user()._get_perms() == "guest":
+	if currentComputer.get_active_user().get_perms() == "guest":
 		return "Users with [color=red]guest[/color] permissions cannot use adduser!"
 	
-	for user in currentComputer._get_users():
-		if user._get_name() == fullCommand[1]:
+	for user in currentComputer.get_users():
+		if user.get_user_name() == fullCommand[1]:
 			return "Name [color=red]'%s'[/color] already taken!" % fullCommand[1]
 	username = fullCommand[1]
 	perms = username
@@ -169,10 +171,10 @@ func addUser(fullCommand: Array) -> String:
 	if fullCommand.size() == 4:
 		perms = fullCommand[3]
 	
-	if currentComputer._get_active_user()._get_perms() != "root" && perms == "root":
+	if currentComputer.get_active_user().get_perms() != "root" && perms == "root":
 		return "Users with [color=red]'%s'[/color] permissions cannot create a user with root access!" % currentComputer._get_active_user()._get_perms()
 	
-	currentComputer._add_user(username, password, perms)
+	currentComputer.add_user(username, password, perms)
 	
 	return "Created user [color=green]%s[/color]!" % username
 
@@ -186,25 +188,25 @@ func listItems(fullCommand: Array):
 	#String initialized here for formatting later
 	var fileListString: String = ""
 	#Gets the array of items from the active directory
-	var items = currentComputer._get_active_directory()._get_children()
+	var items = currentComputer.get_active_directory().get_directory_children()
 	#Formats the 'users' into an ordered list
 	for i in range(items.size()):
 		if !is_instance_valid(items[i]):
 			continue
 		if items[i]._class == "File":
-			fileListString += str(i + 1) + ". " + "[color=green]" + items[i]._get_name() + items[i]._get_extension() + ":[/color] "
+			fileListString += str(i + 1) + ". " + "[color=green]" + items[i].get_file_name() + items[i].get_extension() + ":[/color] "
 		else:	
-			fileListString += str(i + 1) + ". " + "[color=green]" + items[i]._get_name() + ":[/color] "
+			fileListString += str(i + 1) + ". " + "[color=green]" + items[i].get_directory_name() + ":[/color] "
 			
-		if currentComputer._get_active_user()._eval_perms(items[i]._get_read_perms()):
-			fileListString += "[color=green]" + items[i]._get_read_perms() + "[/color], "
+		if currentComputer.get_active_user().eval_perms(items[i].get_read_perms()):
+			fileListString += "[color=green]" + items[i].get_read_perms() + "[/color], "
 		else:
-			fileListString += "[color=red]" + items[i]._get_read_perms() + "[/color], "
+			fileListString += "[color=red]" + items[i].get_read_perms() + "[/color], "
 			
-		if currentComputer._get_active_user()._eval_perms(items[i]._get_write_perms()):
-			fileListString += "[color=green]" + items[i]._get_write_perms() + "[/color]\n"
+		if currentComputer.get_active_user().eval_perms(items[i].get_write_perms()):
+			fileListString += "[color=green]" + items[i].get_write_perms() + "[/color]\n"
 		else:
-			fileListString += "[color=red]" + items[i]._get_write_perms() + "[/color]\n"
+			fileListString += "[color=red]" + items[i].get_write_perms() + "[/color]\n"
 	
 	return fileListString
 
@@ -218,15 +220,15 @@ func changeDirectory(fullCommand: Array):
 	var pathString: String = fullCommand[1]
 	
 	if pathString[0] != "/" && pathString != "..":
-		pathString = currentComputer._get_active_directory()._get_path() + pathString
+		pathString = currentComputer.get_active_directory().get_directory_path() + pathString
 	if pathString[pathString.length() - 1] != "/" && pathString != "..":
 		pathString += "/"
 	
-	var success = currentComputer._set_active_directory(_parse_path(fullCommand[1]), pathString)
+	var success = currentComputer.set_active_directory(_parse_path(fullCommand[1]), pathString)
 	if success == 1:
-		return "Changed active directory to [color=green]'%s'[/color]" % currentComputer._get_active_directory()._get_name()
+		return "Changed active directory to [color=green]'%s'[/color]" % currentComputer.get_active_directory().get_directory_name()
 	elif success == 3:
-		return "User [color=red]'%s'[/color] does not have permission to view [color=green]'%s'[/color]" % [currentComputer._get_active_user()._get_name(), fullCommand[1]]
+		return "User [color=red]'%s'[/color] does not have permission to view [color=green]'%s'[/color]" % [currentComputer.get_active_user().get_user_name(), fullCommand[1]]
 	return "No directory with path [color=red]'%s'[/color] was found!" % fullCommand[1]
 
 
@@ -238,8 +240,8 @@ func makeDirectory(fullCommand: Array) -> String:
 	
 	var dirName: String = fullCommand[1]
 	var pathString = fullCommand[2]
-	var dirWritePerms = currentComputer._get_active_user()._get_name()
-	var dirReadPerms = currentComputer._get_active_user()._get_name()
+	var dirWritePerms = currentComputer.get_active_user().get_user_name()
+	var dirReadPerms = currentComputer.get_active_user().get_user_name()
 	
 	#Prevents unusable directorys being created
 	if dirName.contains("/"):
@@ -247,32 +249,32 @@ func makeDirectory(fullCommand: Array) -> String:
 	
 	#Checks and prepares the path input for later
 	if pathString[0] != "/" && pathString != '.':
-		pathString = currentComputer._get_active_directory()._get_path() + pathString
+		pathString = currentComputer.get_active_directory().get_directory_path() + pathString
 	if pathString == '.':
-		pathString = currentComputer._get_active_directory()._get_path()
+		pathString = currentComputer.get_active_directory().get_directory_path()
 	if pathString[pathString.length() - 1] != "/":
 		pathString += "/"
 	
 	#Checks if the same 'directory' already exists
-	if currentComputer._get_root()._find_item_by_path(currentComputer, _parse_path(pathString + dirName + "/"), pathString + dirName + "/"):
+	if currentComputer.get_root().find_item_by_path(currentComputer, _parse_path(pathString + dirName + "/"), pathString + dirName + "/"):
 		return "directory with path [color=red]'%s'[/color] already exists!" % [pathString + dirName + "/"]
 	
 	#Checks if the 'activeUser' has permission to create the 'directory'
-	if fullCommand.size() == 5 && currentComputer._get_active_user()._eval_perms(fullCommand[3]) && currentComputer._get_active_user()._eval_perms(fullCommand[4]):
+	if fullCommand.size() == 5 && currentComputer.get_active_user().eval_perms(fullCommand[3]) && currentComputer.get_active_user().eval_perms(fullCommand[4]):
 		dirReadPerms = fullCommand[3]
 		dirWritePerms = fullCommand[4]
-	elif fullCommand.size() == 4 && currentComputer._get_active_user()._eval_perms(fullCommand[3]):
+	elif fullCommand.size() == 4 && currentComputer.get_active_user().eval_perms(fullCommand[3]):
 		dirWritePerms = fullCommand[3]
 		dirReadPerms = fullCommand[3]
 	#Different errors for insufficient permissions
-	elif fullCommand.size() == 4 && !currentComputer._get_active_user()._eval_perms(fullCommand[3]):
-		return "user [color=red]'%s'[/color] does not have write permission to level [color=red]'%s'[/color]!" % [currentComputer._get_active_user()._get_name(), fullCommand[3]]
-	elif fullCommand.size() == 5 && !currentComputer._get_active_user()._eval_perms(fullCommand[3]):
-		return "user [color=red]'%s'[/color] does not have write permission to level [color=red]'%s'[/color]!" % [currentComputer._get_active_user()._get_name(), fullCommand[3]]
-	elif fullCommand.size() == 5 && !currentComputer._get_active_user()._eval_perms(fullCommand[4]):
-		return "user [color=red]'%s'[/color] does not have write permission to level [color=red]'%s'[/color]!" % [currentComputer._get_active_user()._get_name(), fullCommand[4]]
+	elif fullCommand.size() == 4 && !currentComputer.get_active_user().eval_perms(fullCommand[3]):
+		return "user [color=red]'%s'[/color] does not have write permission to level [color=red]'%s'[/color]!" % [currentComputer.get_active_user().get_user_name(), fullCommand[3]]
+	elif fullCommand.size() == 5 && !currentComputer.get_active_user().eval_perms(fullCommand[3]):
+		return "user [color=red]'%s'[/color] does not have write permission to level [color=red]'%s'[/color]!" % [currentComputer.get_active_user().get_user_name(), fullCommand[3]]
+	elif fullCommand.size() == 5 && !currentComputer.get_active_user().eval_perms(fullCommand[4]):
+		return "user [color=red]'%s'[/color] does not have write permission to level [color=red]'%s'[/color]!" % [currentComputer.get_active_user().get_user_name(), fullCommand[4]]
 		
-	currentComputer._add_directory(dirName, dirReadPerms, dirWritePerms, pathString)
+	currentComputer.add_directory(dirName, dirReadPerms, dirWritePerms, pathString)
 	return "Created directory [color=green]'%s'[/color]!" % [pathString + dirName + "/"]
 
 
@@ -282,7 +284,7 @@ func readFile(fullCommand: Array):
 	if fullCommand.size() != 2:
 		return _error_arg_number(fullCommand.size(), 1, "cat")
 	
-	var item = currentComputer._get_root()._find_item_by_path(currentComputer, _parse_path(fullCommand[1]), fullCommand[1])
+	var item = currentComputer.get_root().find_item_by_path(currentComputer, _parse_path(fullCommand[1]), fullCommand[1])
 	
 	#Returns error if 'item' is not valid
 	if !is_instance_valid(item):
@@ -291,13 +293,13 @@ func readFile(fullCommand: Array):
 	if item._class == "Directory":
 		return "Cannot cat a [color=red]directory[/color]!"
 	#Returns error if 'item' is not a printable file
-	if !item._get_printable():
-		return "This file is not printable!"
+	if !item.get_printable():
+		return "This file is [color=red]not[/color] printable!"
 	#Returns error if 'user' does not meet permissions
-	if !currentComputer._get_active_user()._eval_perms(item._get_read_perms()):
-		return "User [color=red]'%s'[/color] does not have permission to view this file!" % currentComputer._get_active_user()._get_name()
+	if !currentComputer.get_active_user().eval_perms(item.get_read_perms()):
+		return "User [color=red]'%s'[/color] does not have permission to view this file!" % currentComputer.get_active_user().get_user_name()
 	
-	return item._get_content()
+	return item.get_content()
 
 
 #Removes a 'file' or 'directory' on the current machine
@@ -309,24 +311,24 @@ func remove(fullCommand: Array):
 	var pathString: String = fullCommand[1]
 	
 	if pathString[0] != "/":
-		pathString = currentComputer._get_active_directory()._get_path() + pathString
+		pathString = currentComputer.get_active_directory().get_directory_path() + pathString
 	if pathString[pathString.length() - 1] != "/":
 		pathString += "/"
 	
 	if pathString == "/":
 		return "Cannot delete [color=red]'/'[/color] directory!"
 	
-	var toRemove = currentComputer._get_root()._find_item_by_path(currentComputer, _parse_path(pathString), pathString)
+	var toRemove = currentComputer.get_root().find_item_by_path(currentComputer, _parse_path(pathString), pathString)
 	
-	if currentComputer._get_active_directory() == toRemove:
-		currentComputer._set_active_directory(_parse_path("/"), "/")
+	if currentComputer.get_active_directory() == toRemove:
+		currentComputer.set_active_directory(_parse_path("/"), "/")
 	
-	var success = currentComputer._remove_item(_parse_path(pathString), pathString)
+	var success = currentComputer.remove_item(_parse_path(pathString), pathString)
 	
 	if success == 1:
 		return "Removed '%s' [color=green]'%s'[/color]" % [toRemove._class.to_lower(), pathString]
 	elif success == 3:
-		return "User [color=red]'%s'[/color] does not have permission to remove [color=green]'%s'[/color]" % [currentComputer._get_active_user()._get_name(), fullCommand[1]]
+		return "User [color=red]'%s'[/color] does not have permission to remove [color=green]'%s'[/color]" % [currentComputer.get_active_user().get_user_name(), fullCommand[1]]
 	return "No directory with name [color=red]'%s'[/color] was found!" % fullCommand[1]
 
 
@@ -337,13 +339,13 @@ func connectComputer(fullCommand: Array):
 		return _error_arg_number(fullCommand.size(), 1, "comcon")
 	
 	#Matches the 'id' to a computer
-	var toConnect = networkManager._find_computer_by_ID(int(fullCommand[1]))
+	var toConnect = networkManager.find_computer_by_ID(int(fullCommand[1]))
 	if toConnect == null || toConnect.crashed:
 		return "Could not find a computer with ID [color=red]'%s'[/color]" % fullCommand[1]
-	if toConnect._get_connected_NetNode() != home._get_connected_NetNode():
-		return "Could connect to [color=red]'%s'[/color], computer on NetNode different to [color=cyan]home computer[/color]!" % toConnect._get_ID()
+	if toConnect.get_connected_NetNode() != home.get_connected_NetNode():
+		return "Could connect to [color=red]'%s'[/color], computer on NetNode different to [color=cyan]home computer[/color]!" % toConnect.get_ID()
 	
-	changeComputer(toConnect)
+	_changeComputer(toConnect)
 	return "Connected to [color=green]'%s'[/color]" % currentComputer.computerName
 
 
@@ -355,17 +357,17 @@ func connectNetNode(fullCommand: Array):
 	
 	
 	#Matches the 'id' to a NetNode
-	var toConnect = networkManager._find_NetNode_by_ID(int(fullCommand[1]))
+	var toConnect = networkManager.find_NetNode_by_ID(int(fullCommand[1]))
 	if toConnect == null:
 		return "Could not find a NetNode with ID [color=red]'%s'[/color]" % fullCommand[1]
 	
 	if currentComputer != home:
-		currentComputer._connect_NetNode(toConnect)
-		changeComputer(home)
+		currentComputer.connect_NetNode(toConnect)
+		_changeComputer(home)
 		return "Returned to [color=cyan]home computer[/color], cannot connect to a computer on a different NetNode to [color=cyan]home[/color]"
 	
-	currentComputer._connect_NetNode(toConnect)
-	return "Connected to [color=green]'%s'[/color]" % currentComputer._get_connected_NetNode()._get_name()
+	currentComputer.connect_NetNode(toConnect)
+	return "Connected to [color=green]'%s'[/color]" % currentComputer.get_connected_NetNode().get_NetNode_name()
 
 
 
@@ -378,20 +380,20 @@ func scan(fullCommand: Array):
 	#String initialized here for formatting later
 	var listString: String = ""
 	#Gets the array of 'computers' from the network
-	var computers = currentComputer._get_connected_NetNode()._get_computers()
-	var netNodes = networkManager._get_netNodes()
+	var computers = currentComputer.get_connected_NetNode().get_computers()
+	var netNodes = networkManager.get_netNodes()
 	#Index for lists
 	var i = 0
 	#Formats the 'NetNodes' into an ordered list
 	listString += "[color=cyan]NetNodes:[/color]\n"
-	for node in netNodes:
-		if node == currentComputer._get_connected_NetNode():
+	for node: Net_Node in netNodes:
+		if node == currentComputer.get_connected_NetNode():
 			listString += "[color=green]"
 		i += 1
-		listString += str(i) + ". " + node._get_name() + ": "
-		if node == currentComputer._get_connected_NetNode():
+		listString += str(i) + ". " + node.get_NetNode_name() + ": "
+		if node == currentComputer.get_connected_NetNode():
 			listString += "[/color]"
-		listString += str(node._get_ID()) + "\n"
+		listString += str(node.get_ID()) + "\n"
 	#Formats the 'computers' into an ordered list
 	i = 0
 	listString += "\n[color=cyan]Computers:[/color]\n"
@@ -400,15 +402,15 @@ func scan(fullCommand: Array):
 			continue
 		if comp == currentComputer:
 			listString += "[color=green]"
-		if comp._get_connected_NetNode() == currentComputer._get_connected_NetNode():
+		if comp.get_connected_NetNode() == currentComputer.get_connected_NetNode():
 			i += 1
-			listString += str(i) + ". " + comp._get_name() + ": "
+			listString += str(i) + ". " + comp.get_com_name() + ": "
 		else:
 			pass
 		if comp == currentComputer:
 			listString += "[/color]"
-		if comp._get_connected_NetNode() == currentComputer._get_connected_NetNode():
-			listString += str(comp._get_ID()) + "\n"
+		if comp.get_connected_NetNode() == currentComputer.get_connected_NetNode():
+			listString += str(comp.get_ID()) + "\n"
 			
 	return listString
 
@@ -419,14 +421,28 @@ func info(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "info")
 	
-	return "Computer name: [color=green]'%s'[/color] \nComputer ID: [color=green]'%s'[/color] \nNetNode name: [color=green]'%s'[/color] \nNetNode ID: [color=green]'%s'[/color]" % [currentComputer._get_name(), currentComputer._get_ID(), currentComputer._get_connected_NetNode()._get_name(), currentComputer._get_connected_NetNode()._get_ID()]
+	return "Computer name: [color=green]'%s'[/color] \nComputer ID: [color=green]'%s'[/color] \nNetNode name: [color=green]'%s'[/color] \nNetNode ID: [color=green]'%s'[/color]" % [currentComputer.get_com_name(), currentComputer.get_ID(), currentComputer.get_connected_NetNode().get_NetNode_name(), currentComputer.get_connected_NetNode().get_ID()]
 
 
-#Returns the current time
+#Returns the current time in 24hr format
 const timeHelpMess: String = "[color=green]time: - [/color]Returns the current time in 24hr format"
 func time(fullCommand: Array):
-	var timeString = timeManger._get_time_formated()
-	return "Time: [color=green]'%s'[/color]" %[timeString]
+	var timeString = timeManger.get_time_formated()
+	var dayString = str(timeManger.get_day())
+	var wakeString 
+	return "Time: [color=green]'%s'[/color] \nDay: [color=green]'%s'[/color]" %[timeString, dayString]
+
+
+#Calls the player_sleep function in 'time_manager' 
+#which causes the player to sleep for 8hrs
+const shutdownHelpMess: String = "[color=green]shutdown: - [/color]Shutdown computer, if on home computer sleep for 8hrs"
+func shutdown(fullCommand: Array):
+	if currentComputer.get_com_name() == home.get_com_name():
+		timeManger.player_sleep()
+		return "[color=green]You have slept for eight hours[/color]"
+	else:
+		_changeComputer(home)
+		return "current computer has been [color=red]shutdown[/color] returning to [color=green]home[/color]"
 #End of command functions
 
 
@@ -440,11 +456,11 @@ func _is_crashed():
 
 
 func _update_caret():
-	caret.text = currentComputer._get_active_user()._get_name() + "@" + currentComputer._get_name() + ":" + currentComputer._get_active_directory()._get_path() + ">"
+	caret.text = currentComputer.get_active_user().get_user_name() + "@" + currentComputer.get_com_name() + ":" + currentComputer.get_active_directory().get_directory_path() + ">"
 
 
 #Changes 'currentComputer' to the new 'Computer' object
-func changeComputer(newComputer: Computer):
+func _changeComputer(newComputer: Computer):
 	currentComputer = newComputer
 
 
@@ -452,7 +468,7 @@ func changeComputer(newComputer: Computer):
 func _parse_path(pathToParse: String) -> Array:
 	var pathParsed: Array
 	if pathToParse[0] != "/":
-		pathToParse = currentComputer._get_active_directory()._get_path() + pathToParse
+		pathToParse = currentComputer.get_active_directory().get_directory_path() + pathToParse
 	
 	print(pathToParse)
 	

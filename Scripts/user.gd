@@ -12,37 +12,37 @@ const _class = "User"
 
 
 #Returns this user's name
-func _get_name() -> String:
+func get_user_name() -> String:
 	return userName
 
 
 #Changes this user's name
-func _set_name(newName: String):
+func set_user_name(newName: String):
 	userName = newName
 
 
 #Returns this user's password
-func _get_password() -> String:
+func get_password() -> String:
 	return userPassword
 
 
 #Changes this user's password
-func _set_password(newPass: String):
+func set_password(newPass: String):
 	userPassword = newPass
 
 
 #Returns this user's perms
-func _get_perms() -> String:
+func get_perms() -> String:
 	return userPerms
 
 
 #Changes this user's perms
-func _set_perms(newPerms: String):
+func set_perms(newPerms: String):
 	userPerms = newPerms
 
 
 #Compares the 'perms' passed in to this user's 'perms'
-func _eval_perms(inPerms: String):
+func eval_perms(inPerms: String):
 	if inPerms == "guest":
 		return true
 	elif inPerms == userPerms:

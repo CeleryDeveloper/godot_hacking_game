@@ -44,12 +44,12 @@ func _ready() -> void:
 
 
 #Returns the 'connectedComputers' Array
-func _get_computers() -> Array:
+func get_computers() -> Array:
 	return connectedComputers
 
 
 #Returns the 'connectedNetNodes' Array
-func _get_netNodes() -> Array:
+func get_netNodes() -> Array:
 	return connectedNetNodes
 
 
@@ -63,17 +63,17 @@ func _refresh_connected_children():
 
 
 #Finds a 'computer' with the specified 'id', returns null if failure
-func _find_computer_by_ID(id: int) -> Computer:
+func find_computer_by_ID(id: int) -> Computer:
 	for comp in connectedComputers:
-		if comp._get_ID() == id:
+		if comp.get_ID() == id:
 			return comp
 	return null
 
 
 #Finds a 'NetNode' with the specified 'id', returns null if failure
-func _find_NetNode_by_ID(id: int) -> Net_Node:
+func find_NetNode_by_ID(id: int) -> Net_Node:
 	for node in connectedNetNodes:
-		if node._get_ID() == id:
+		if node.get_ID() == id:
 			return node
 	return null
 
@@ -96,11 +96,11 @@ func _batch_gen():
 #Generates a 'computer' with the specified information
 func _generate_computer(ID: int, computerName: String) -> Computer:
 	var newComputer = computerPrefab.instantiate()
-	newComputer._set_ID(ID)
-	newComputer._set_name(computerName)
+	newComputer.set_ID(ID)
+	newComputer.set_com_name(computerName)
 	connectedComputers.append(newComputer)
 	add_child(newComputer)
-	newComputer._connect_NetNode(connectedNetNodes.pick_random())
+	newComputer.connect_NetNode(connectedNetNodes.pick_random())
 	return newComputer
 
 
@@ -125,7 +125,7 @@ func _random_computer():
 	
 	var newID = randi_range(1, 999999)
 	
-	while(_find_computer_by_ID(newID) != null):
+	while(find_computer_by_ID(newID) != null):
 		newID = randi_range(1, 999999)
 	
 	var computer = _generate_computer(newID, computerName)
@@ -140,7 +140,7 @@ func _random_computer():
 	else:
 		mainUserPerms = mainUser
 	
-	computer._add_user(mainUser, password, mainUserPerms)
+	computer.add_user(mainUser, password, mainUserPerms)
 	
 	#Generates a second user
 	if randi_range(1, 3) == 1:
@@ -155,15 +155,15 @@ func _random_computer():
 		var secondPassword = ""
 		if randi_range(1, 10) != 1:
 			secondPassword = _random_password(secondUser)
-		computer._add_user(secondUser, secondPassword, secondUser)
+		computer.add_user(secondUser, secondPassword, secondUser)
 
 
 #Generates a 'NetNode' with the specified information
 func _generate_NetNode(ID: int, netNodeName: String, company: String) -> Net_Node:
 	var newNetNode = netNodePrefab.instantiate()
-	newNetNode._set_ID(ID)
-	newNetNode._set_name(netNodeName)
-	newNetNode._set_corp(company)
+	newNetNode.set_ID(ID)
+	newNetNode.set_NetNode_name(netNodeName)
+	newNetNode.set_corp(company)
 	connectedNetNodes.append(newNetNode)
 	add_child(newNetNode)
 	return newNetNode
@@ -186,7 +186,7 @@ func _random_NetNode():
 	
 	var newID = randi_range(1, 999)
 	
-	while(_find_computer_by_ID(newID) != null):
+	while(find_computer_by_ID(newID) != null):
 		newID = randi_range(1, 999)
 	
 	_generate_NetNode(newID, netNodeName, companyName)

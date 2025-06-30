@@ -8,8 +8,8 @@ const _class = "Port"
 @export var port_number = 0
 @export var port_open = false
 
-func _get_number() -> int:
+func get_number() -> int:
 	return port_number
 
-func _set_number(newNumber: int):
+func set_number(newNumber: int):
 	port_number = newNumber
