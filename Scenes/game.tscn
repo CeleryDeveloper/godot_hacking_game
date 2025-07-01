@@ -1,12 +1,20 @@
-[gd_scene load_steps=13 format=3 uid="uid://flpjnlaxcsla"]
+[gd_scene load_steps=16 format=3 uid="uid://flpjnlaxcsla"]
 
 [ext_resource type="Script" uid="uid://qv8havl8xytj" path="res://Scripts/game.gd" id="1_36ffd"]
 [ext_resource type="Script" uid="uid://dw1b56x7des5o" path="res://Scripts/input.gd" id="1_h1hun"]
 [ext_resource type="Script" uid="uid://bl7p65pe8kk4b" path="res://Scripts/command_processor.gd" id="2_5aoqe"]
+[ext_resource type="Script" uid="uid://chouudvoxhju8" path="res://Scripts/music_manger.gd" id="2_v158k"]
 [ext_resource type="Script" uid="uid://bhx7f4634pv42" path="res://Scripts/network_manager.gd" id="3_5u0fr"]
+[ext_resource type="AudioStream" uid="uid://4spf7ij77eug" path="res://Audio/Music/Unemployed_Ambience.mp3" id="3_h4fw4"]
 [ext_resource type="PackedScene" uid="uid://dmjje3pjfprba" path="res://Scenes/computer.tscn" id="3_xo6vp"]
 [ext_resource type="FontFile" uid="uid://67rccbw0m8xx" path="res://Fonts/VT323/VT323-Regular.ttf" id="5_wrohv"]
 [ext_resource type="Script" uid="uid://c08xlca2i15rq" path="res://Scripts/time_manager.gd" id="7_1l0tm"]
+
+[sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_v158k"]
+shuffle = true
+loop = false
+stream_count = 1
+stream_0 = ExtResource("3_h4fw4")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b466x"]
 bg_color = Color(0, 0, 0, 0.576471)
@@ -29,6 +37,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_36ffd")
+
+[node name="MusicManager" type="Node" parent="."]
+script = ExtResource("2_v158k")
+
+[node name="MusicLevel1" type="AudioStreamPlayer" parent="MusicManager"]
+stream = SubResource("AudioStreamPlaylist_v158k")
+volume_db = -11.0
 
 [node name="TimeManager" type="Node" parent="."]
 script = ExtResource("7_1l0tm")
@@ -115,8 +130,12 @@ autostart = true
 [node name="MinuteTimer" type="Timer" parent="."]
 autostart = true
 
+[node name="MusicTimer" type="Timer" parent="."]
+autostart = true
+
 [connection signal="passout" from="TimeManager" to="." method="_player_passout"]
 [connection signal="text_submitted" from="Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input" to="." method="_on_input_text_submitted"]
 [connection signal="text_submitted" from="Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input" to="Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input" method="_on_text_submitted"]
 [connection signal="timeout" from="BatchTimer" to="NetworkManager" method="_batch_gen"]
 [connection signal="timeout" from="MinuteTimer" to="TimeManager" method="_time_cycle"]
+[connection signal="timeout" from="MusicTimer" to="MusicManager" method="adaptive_music"]

@@ -459,7 +459,7 @@ func is_crashed():
 	if currentComputer == home:
 		return "Home computer crashed [color=red]you lose[/color]"
 	if currentComputer != home:
-		return "Computer [color=red]'%s'[/color] crashed returning to [color=green]home[/color]" % currentComputer._get_name()
+		return "Computer [color=red]'%s'[/color] crashed returning to [color=green]home[/color]" % currentComputer.get_com_name()
 
 
 func update_caret():

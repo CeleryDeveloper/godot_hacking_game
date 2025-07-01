@@ -98,5 +98,5 @@ func update_path():
 #Removes this 'file' from the scene
 func remove_self():
 	if integralFile:
-		parentComputer._crash()
+		parentComputer.crash()
 	queue_free()

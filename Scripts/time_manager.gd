@@ -17,7 +17,7 @@ var time: int = 0
 var day: int = 1
 
 #The time in minutes since the player has last slept
-var wakeTime: int = 1665
+var wakeTime: int = 0
 
 #The maximum time the player can stay awake in minutes
 var maxWakeTime: int = 1680
