@@ -42,8 +42,12 @@ This is a small hacking game made in godot based on hacknet, greyhack, bitburner
 	<li>Some kind of gameplay</li>
 	<li>Rent system</li>
 	<li>Exploit discovery cycle</li> 
+	<li>Ingame notification system</li>
   </ul>
-  <h5>Obviously this isn't all the features that will be added, also probably won't be finished in order.</h5>
+  <h5>
+	Obviously this isn't all the features that will be added, also probably won't be finished in order.</br>
+	None of these are final some features may be scraped
+  </h5>
 
 <h2>How to run:</h2>
 <p>

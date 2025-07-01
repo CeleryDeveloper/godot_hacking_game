@@ -1,6 +1,10 @@
 extends Node
 class_name CommandProcessor
 
+#This script handles the processing of user input
+#aswell as interaction with the connected computer
+
+
 var currentComputer: Computer = null
 var commandHistory: Array[String]
 var home: Computer
@@ -8,7 +12,7 @@ var home: Computer
 
 @onready var networkManager: Network_Manager = $"../NetworkManager"
 @onready var caret: Label = $"../Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Caret"
-@onready var timeManger: TimeManager = $"../TimeManager"
+@onready var timeManager: TimeManager = $"../TimeManager"
 
 func _initialize(startingComputer):
 	currentComputer = startingComputer
@@ -16,7 +20,7 @@ func _initialize(startingComputer):
 	currentComputer.connect_NetNode(networkManager.get_netNodes().pick_random())
 
 
-func _process_command(input: String) -> String:
+func process_command(input: String) -> String:
 	if currentComputer.crashed:
 		return "Current computer is [color=red]inoperational[/color]!"
 	
@@ -345,7 +349,7 @@ func connectComputer(fullCommand: Array):
 	if toConnect.get_connected_NetNode() != home.get_connected_NetNode():
 		return "Could connect to [color=red]'%s'[/color], computer on NetNode different to [color=cyan]home computer[/color]!" % toConnect.get_ID()
 	
-	_changeComputer(toConnect)
+	changeComputer(toConnect)
 	return "Connected to [color=green]'%s'[/color]" % currentComputer.computerName
 
 
@@ -363,7 +367,7 @@ func connectNetNode(fullCommand: Array):
 	
 	if currentComputer != home:
 		currentComputer.connect_NetNode(toConnect)
-		_changeComputer(home)
+		changeComputer(home)
 		return "Returned to [color=cyan]home computer[/color], cannot connect to a computer on a different NetNode to [color=cyan]home[/color]"
 	
 	currentComputer.connect_NetNode(toConnect)
@@ -424,13 +428,16 @@ func info(fullCommand: Array):
 	return "Computer name: [color=green]'%s'[/color] \nComputer ID: [color=green]'%s'[/color] \nNetNode name: [color=green]'%s'[/color] \nNetNode ID: [color=green]'%s'[/color]" % [currentComputer.get_com_name(), currentComputer.get_ID(), currentComputer.get_connected_NetNode().get_NetNode_name(), currentComputer.get_connected_NetNode().get_ID()]
 
 
-#Returns the current time in 24hr format
-const timeHelpMess: String = "[color=green]time: - [/color]Returns the current time in 24hr format"
+#Returns the current time in 24hr format, the day, and the time since last rest
+const timeHelpMess: String = "[color=green]time: - [/color]Returns the current time in 24hr format, the day, and the time since last rest"
 func time(fullCommand: Array):
-	var timeString = timeManger.get_time_formated()
-	var dayString = str(timeManger.get_day())
-	var wakeString 
-	return "Time: [color=green]'%s'[/color] \nDay: [color=green]'%s'[/color]" %[timeString, dayString]
+	var timeString = timeManager.get_time_formatted()
+	var dayString = str(timeManager.get_day())
+	var wakeString = timeManager.get_wake_time_formatted()
+	var maxWakeString = timeManager.get_max_wake_time_formatted()
+	if timeManager.get_wake_time() > timeManager.get_max_wake_time() - 120:
+		return "Time: [color=green]'%s'[/color] \nDay: [color=green]'%s'[/color] \nTime since rest: [color=red]'%s/%s'[/color]" %[timeString, dayString, wakeString, maxWakeString]
+	return "Time: [color=green]'%s'[/color] \nDay: [color=green]'%s'[/color] \nTime since rest: [color=green]'%s/%s'[/color]" %[timeString, dayString, wakeString, maxWakeString]
 
 
 #Calls the player_sleep function in 'time_manager' 
@@ -438,15 +445,15 @@ func time(fullCommand: Array):
 const shutdownHelpMess: String = "[color=green]shutdown: - [/color]Shutdown computer, if on home computer sleep for 8hrs"
 func shutdown(fullCommand: Array):
 	if currentComputer.get_com_name() == home.get_com_name():
-		timeManger.player_sleep()
+		timeManager.player_sleep()
 		return "[color=green]You have slept for eight hours[/color]"
 	else:
-		_changeComputer(home)
+		changeComputer(home)
 		return "current computer has been [color=red]shutdown[/color] returning to [color=green]home[/color]"
 #End of command functions
 
 
-func _is_crashed():
+func is_crashed():
 	if !currentComputer.crashed:
 		return null
 	if currentComputer == home:
@@ -455,12 +462,12 @@ func _is_crashed():
 		return "Computer [color=red]'%s'[/color] crashed returning to [color=green]home[/color]" % currentComputer._get_name()
 
 
-func _update_caret():
+func update_caret():
 	caret.text = currentComputer.get_active_user().get_user_name() + "@" + currentComputer.get_com_name() + ":" + currentComputer.get_active_directory().get_directory_path() + ">"
 
 
 #Changes 'currentComputer' to the new 'Computer' object
-func _changeComputer(newComputer: Computer):
+func changeComputer(newComputer: Computer):
 	currentComputer = newComputer
 
 

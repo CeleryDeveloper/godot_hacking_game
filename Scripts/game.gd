@@ -34,18 +34,18 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	#Updates the caret symbol before the input to display user info, not the cursor
-	commandProcessor._update_caret()
+	commandProcessor.update_caret()
 	
-	if commandProcessor._is_crashed() != null && !lost:
+	if commandProcessor.is_crashed() != null && !lost:
 		var crashMessage = ResponseNoHistory.instantiate()
 		#If currentComputer has crashed and it's not the home computer show error then return to home
 		if commandProcessor.currentComputer != commandProcessor.home:
-			crashMessage.text = commandProcessor._is_crashed()
+			crashMessage.text = commandProcessor.is_crashed()
 			_add_response(crashMessage)
 			commandProcessor.changeComputer(commandProcessor.home)
 		#If currentComputer has crashed and is home end game
 		else:
-			crashMessage.text = commandProcessor._is_crashed()
+			crashMessage.text = commandProcessor.is_crashed()
 			_add_response(crashMessage)
 			lost = true
 	
@@ -54,6 +54,18 @@ func _process(_delta: float) -> void:
 		_navigate_history(1)
 	if Input.is_action_just_pressed("NavigateHistoryDOWN"):
 		_navigate_history(-1)
+
+
+#Runs when player passes out
+func _player_passout():
+	var passoutMessage = ResponseNoHistory.instantiate()
+	if commandProcessor.currentComputer == commandProcessor.home:
+		passoutMessage.text = "You have [color=red]passed out[/color]! You will sleep for [color=red]eight hours[/color]."
+		_add_response(passoutMessage)
+	else:
+		passoutMessage.text = "You have [color=red]passed out[/color]! You will sleep for [color=red]eight hours[/color] and be returned to [color=green]home[/color]."
+		_add_response(passoutMessage)
+		commandProcessor.changeComputer(commandProcessor.home)
 
 
 #Navigates the history of inputs using arrow keys
@@ -94,7 +106,7 @@ func _on_input_text_submitted(new_text: String) -> void:
 		return
 		
 	var response = Response.instantiate()
-	var output = commandProcessor._process_command(new_text)
+	var output = commandProcessor.process_command(new_text)
 	#Sets text in response node based on the commandProcessor
 	response.set_text(new_text, output, commandProcessor.currentComputer)
 	historyPos = -1
