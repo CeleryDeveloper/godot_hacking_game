@@ -97,5 +97,5 @@ func find_item_by_path(parentComp: Computer, pathParsed: Array, pathIn: String):
 #Removes this 'directory' from the scene
 func remove_self():
 	for child in children:
-		child._remove_self()
+		child.remove_self()
 	queue_free()

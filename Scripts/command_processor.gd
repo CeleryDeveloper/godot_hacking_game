@@ -433,11 +433,12 @@ const timeHelpMess: String = "[color=green]time: - [/color]Returns the current t
 func time(fullCommand: Array):
 	var timeString = timeManager.get_time_formatted()
 	var dayString = str(timeManager.get_day())
+	var weekdayString = timeManager.get_weekday()
 	var wakeString = timeManager.get_wake_time_formatted()
 	var maxWakeString = timeManager.get_max_wake_time_formatted()
 	if timeManager.get_wake_time() > timeManager.get_max_wake_time() - 120:
-		return "Time: [color=green]'%s'[/color] \nDay: [color=green]'%s'[/color] \nTime since rest: [color=red]'%s/%s'[/color]" %[timeString, dayString, wakeString, maxWakeString]
-	return "Time: [color=green]'%s'[/color] \nDay: [color=green]'%s'[/color] \nTime since rest: [color=green]'%s/%s'[/color]" %[timeString, dayString, wakeString, maxWakeString]
+		return "Time: [color=green]'%s'[/color] \nDay: [color=green]'%s'[/color] \nWeekday: [color=green]'%s'[/color] \nTime since rest: [color=red]'%s/%s'[/color]" %[timeString, dayString, weekdayString, wakeString, maxWakeString]
+	return "Time: [color=green]'%s'[/color] \nDay: [color=green]'%s'[/color] \nWeekday: [color=green]'%s'[/color] \nTime since rest: [color=green]'%s/%s'[/color]" %[timeString, dayString, weekdayString, wakeString, maxWakeString]
 
 
 #Calls the player_sleep function in 'time_manager' 

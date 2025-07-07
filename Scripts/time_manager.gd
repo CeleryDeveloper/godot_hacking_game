@@ -8,6 +8,7 @@ signal passout
 #Stores the custom 'class_name' 
 #as there is no way to access the name declared using the 'class_name' keyword
 const _class: String = "TimeManager"
+const weekDays: Array[String] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
 
 #The time in minutes from 00:00
@@ -15,6 +16,9 @@ var time: int = 0
 
 #The current day starting at 1
 var day: int = 1
+
+#The current day of the week starting at 0
+var currentWeekday: int = 0
 
 #The time in minutes since the player has last slept
 var wakeTime: int = 0
@@ -29,7 +33,11 @@ func _time_cycle():
 	wakeTime += 1
 	if time >= 1440:
 		day += 1
+		currentWeekday += 1
 		time = 0 + (time - 1440)
+	if currentWeekday > 6:
+		currentWeekday = 0
+		_rent_due()
 	if wakeTime > maxWakeTime:
 		passout.emit()
 		player_sleep()
@@ -40,6 +48,11 @@ func _time_cycle():
 func player_sleep():
 	time += 480
 	wakeTime = 0
+
+
+#Runs on 00:00 Sunday, handles the charging of rent to player
+func _rent_due():
+	pass
 
 
 #Returns the current time in minutes since 00:00
@@ -84,6 +97,11 @@ func get_max_wake_time() -> int:
 #Returns the current day
 func get_day() -> int:
 	return day
+
+
+#Returns the current weekday
+func get_weekday():
+	return weekDays[currentWeekday]
 
 
 #Sets the current time
