@@ -13,6 +13,7 @@ var home: Computer
 @onready var networkManager: Network_Manager = $"../NetworkManager"
 @onready var caret: Label = $"../Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Caret"
 @onready var timeManager: TimeManager = $"../TimeManager"
+@onready var player: Player = $"../Player"
 
 func _initialize(startingComputer):
 	currentComputer = startingComputer
@@ -73,6 +74,8 @@ func process_command(input: String) -> String:
 			return connectComputer(commandParsed)
 		"nodecon":
 			return connectNetNode(commandParsed)
+		"balance":
+			return balance(commandParsed)
 		"info":
 			return info(commandParsed)
 		"time":
@@ -92,7 +95,7 @@ func help(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "help")
 
-	return helpHelpMess + "\n" + userHelpMess + "\n" + luHelpMess + "\n" + lsHelpMess + "\n" + infoHelpMess + "\n" + timeHelpMess + "\n" + scanHelpMess + "\n" + comconHelpMess + "\n" + nodeconHelpMess + "\n" + cuHelpMess + "\n" + useraddHelpMess + "\n" + cdHelpMess + "\n" + mkdirHelpMess + "\n" + rmHelpMess + "\n" + catHelpMess + "\n" + shutdownHelpMess
+	return helpHelpMess + "\n" + userHelpMess + "\n" + luHelpMess + "\n" + lsHelpMess + "\n" + infoHelpMess + "\n" + timeHelpMess + "\n" + scanHelpMess + "\n" + comconHelpMess + "\n" + nodeconHelpMess + "\n" + cuHelpMess + "\n" + useraddHelpMess + "\n" + cdHelpMess + "\n" + mkdirHelpMess + "\n" + rmHelpMess + "\n" + catHelpMess + "\n" + shutdownHelpMess + "\n" + balanceHelpMess
 
 
 #Displays information on the current user
@@ -419,6 +422,15 @@ func scan(fullCommand: Array):
 	return listString
 
 
+#Returns the player's current funds and rent cost
+const balanceHelpMess: String = "[color=green]balance: - [/color]Returns current balance and rent cost"
+func balance(fullCommand: Array):
+	if fullCommand.size() != 1:
+		return _error_arg_number(fullCommand.size(), 0, "balance")
+	
+	return "Cash balance: [color=green]'%.2f'[/color] \nCrypto balance: [color=green]'%.4f'[/color] \nRent: [color=red]N/A[/color]" % [player.get_cash_balance(), player.get_crypto_balance()]
+
+
 #Returns information on the current computer
 const infoHelpMess: String = "[color=green]info: - [/color]Returns info on the current machine."
 func info(fullCommand: Array):
@@ -431,6 +443,9 @@ func info(fullCommand: Array):
 #Returns the current time in 24hr format, the day, and the time since last rest
 const timeHelpMess: String = "[color=green]time: - [/color]Returns the current time in 24hr format, the day, and the time since last rest"
 func time(fullCommand: Array):
+	if fullCommand.size() != 1:
+		return _error_arg_number(fullCommand.size(), 0, "time")
+
 	var timeString = timeManager.get_time_formatted()
 	var dayString = str(timeManager.get_day())
 	var weekdayString = timeManager.get_weekday()
