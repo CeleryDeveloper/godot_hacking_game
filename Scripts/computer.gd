@@ -90,6 +90,7 @@ func add_directory(dirName: String, dirReadPerms: String, dirWritePerms: String,
 func add_file(fileName: String, fileExtension: String, fileReadPerms: String, fileWritePerms: String, parentPath: String, parentDir: Directory = null):
 	var newFile: File = filePrefab.instantiate()
 	var parent: Directory = root.find_item_by_path(self, _parse_path(parentPath), parentPath)
+	
 	if parentDir != null:
 		parent = parentDir
 	if !is_instance_valid(parent):

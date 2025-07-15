@@ -76,6 +76,8 @@ func process_command(input: String) -> String:
 			return connectNetNode(commandParsed)
 		"balance":
 			return balance(commandParsed)
+		"transfer":
+			return transfer(commandParsed)
 		"info":
 			return info(commandParsed)
 		"time":
@@ -382,7 +384,7 @@ func connectNetNode(fullCommand: Array):
 const scanHelpMess: String = "[color=green]scan: - [/color]Returns all computers on the connected NetNode."
 func scan(fullCommand: Array):
 	if fullCommand.size() != 1:
-		return _error_arg_number(fullCommand.size(), 1, "scan")
+		return _error_arg_number(fullCommand.size(), 0, "scan")
 	
 	#String initialized here for formatting later
 	var listString: String = ""
@@ -420,6 +422,39 @@ func scan(fullCommand: Array):
 			listString += str(comp.get_ID()) + "\n"
 			
 	return listString
+
+
+#Transfers crypto from file to player account
+func transfer(fullCommand: Array):
+	if fullCommand.size() != 2:
+		return _error_arg_number(fullCommand.size(), 1, "transfer")
+	
+	var pathString: String = fullCommand[1]
+	var cryptoFile: File = null
+	var cryptoAmount: float = 0
+	
+	#Checks and prepares the path input for later
+	if pathString[0] != "/" && pathString != '.':
+		pathString = currentComputer.get_active_directory().get_directory_path() + pathString
+	if pathString == '.':
+		pathString = currentComputer.get_active_directory().get_directory_path()
+	if pathString[pathString.length() - 1] != "/":
+		pathString += "/"
+	
+	cryptoFile = currentComputer.get_root().find_item_by_path(currentComputer, _parse_path(pathString), pathString)
+	
+	if cryptoFile == null:
+		return "file [color=red]'%s'[/color] does not exist!" % [fullCommand[1]]
+	if currentComputer.activeUser.eval_perms(cryptoFile.get_write_perms()) == false:
+		return "user [color=red]'%s'[/color] does not have write permission to file [color=red]'%s'[/color]!" % [currentComputer.get_active_user().get_user_name(), fullCommand[1]]
+	
+	cryptoAmount = cryptoFile.get_crypto()
+	
+	player.crypto_transaction(cryptoAmount)
+	
+	cryptoFile.set_crypto(0)
+	
+	return "[color=green]'%s'[/color] crypto has been transfered to your account!" % cryptoAmount
 
 
 #Returns the player's current funds and rent cost

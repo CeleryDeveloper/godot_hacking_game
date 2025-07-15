@@ -45,14 +45,9 @@ func _update_path():
 
 #Updates the crypto file in this directory if owned by user with crypto
 func _update_crypto():
-	if ownedBy != null:
-		print("Updating Crypto: " + " Owner: " + str(ownedBy) + " owner crypto:" + str(ownedBy.get_crypto()) + " Parent comp: " + str(parentComp) + "UID: " + str(uid) + "Real start" + str(realOnStart))
 	if parentComp != null && ownedBy != null && ownedBy.get_crypto() != 0:
-		print("Adding Crypto: " + get_directory_path())
-		var cryptoFile = parentComp.add_file(ownedBy.get_user_name() + "wallet", ".cry", ownedBy.get_perms(), ownedBy.get_perms(), get_directory_path(), self)
-		print("cryptoFile: " + str(cryptoFile))
+		var cryptoFile = parentComp.add_file(ownedBy.get_user_name() + "'s_wallet", ".cry", ownedBy.get_perms(), ownedBy.get_perms(), get_directory_path(), self)
 		cryptoFile.set_crypto(ownedBy.get_crypto())
-		print("crypto created at" + str(parentComp.get_ID()) + ownedBy.get_user_name() + " Amount: " + str(ownedBy.get_crypto()))
 		ownedBy.set_crypto(0)
 		
 
@@ -92,7 +87,6 @@ func get_directory_owner() -> User:
 
 
 func set_directory_owner(newOwner):
-	print("Setting owner..." + str(newOwner))
 	ownedBy = newOwner
 	_update_crypto()
 
@@ -102,9 +96,7 @@ func get_parent_comp():
 
 
 func set_parent_comp(newParent):
-	print("Setting parent comp..." + str(newParent))
 	parentComp = newParent
-	print("set parent comp! " + str(parentComp))
 	_update_crypto()
 
 
@@ -120,14 +112,12 @@ func _refresh_connected_children():
 			children.append(child)
 
 
+#Fix recursion!
 #Finds a 'directory' or 'file' with the provided 'path'
 func find_item_by_path(parentCompLocal: Computer, pathParsed: Array, pathIn: String):
-	print("In:" + pathIn + "name:" + get_directory_name())
-	print("path:" + path)
 	if pathIn == ".." && parentCompLocal.activeDirectory.get_parent() is Directory:
 		return parentCompLocal.activeDirectory.get_parent()
 	if pathIn == path:
-		print("Self:" + pathIn)
 		return self
 	var selfParsed = parentCompLocal._parse_path(path)
 	for child in children:
