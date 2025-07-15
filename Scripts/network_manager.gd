@@ -133,6 +133,11 @@ func _random_computer():
 	if randi_range(1, 10) != 1:
 		password = _random_password(mainUser)
 	
+	#Picks if 'mainUser' should have crypto
+	var mainCrypto: float = 0
+	if randi_range(1, 2):
+		mainCrypto = randf_range(0.01, 1.5)
+	
 	#Picks if the 'mainUser' should have root perms
 	var mainUserPerms
 	if randi_range(1, 3) == 1:
@@ -140,7 +145,7 @@ func _random_computer():
 	else:
 		mainUserPerms = mainUser
 	
-	computer.add_user(mainUser, password, mainUserPerms)
+	computer.add_user(mainUser, password, mainUserPerms, mainCrypto)
 	
 	#Generates a second user
 	if randi_range(1, 3) == 1:
@@ -155,7 +160,10 @@ func _random_computer():
 		var secondPassword = ""
 		if randi_range(1, 10) != 1:
 			secondPassword = _random_password(secondUser)
-		computer.add_user(secondUser, secondPassword, secondUser)
+		var crypto = 0
+		if randi_range(1, 2) == 1:
+			crypto = randf_range(0.01, 1)
+		computer.add_user(secondUser, secondPassword, secondUser, crypto)
 
 
 #Generates a 'NetNode' with the specified information

@@ -9,36 +9,39 @@ const _class = "User"
 @export var userName: String = "root"
 @export var userPassword: String = "admin"
 @export var userPerms: String = "root"
+@export var crypto: float = 0
 
 
-#Returns this user's name
 func get_user_name() -> String:
 	return userName
 
 
-#Changes this user's name
 func set_user_name(newName: String):
 	userName = newName
 
 
-#Returns this user's password
 func get_password() -> String:
 	return userPassword
 
 
-#Changes this user's password
 func set_password(newPass: String):
 	userPassword = newPass
 
 
-#Returns this user's perms
 func get_perms() -> String:
 	return userPerms
 
 
-#Changes this user's perms
 func set_perms(newPerms: String):
 	userPerms = newPerms
+
+
+func get_crypto() -> float:
+	return crypto
+
+
+func set_crypto(newBalance: float):
+	crypto = newBalance
 
 
 #Compares the 'perms' passed in to this user's 'perms'

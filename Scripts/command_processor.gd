@@ -325,7 +325,7 @@ func remove(fullCommand: Array):
 	if pathString == "/":
 		return "Cannot delete [color=red]'/'[/color] directory!"
 	
-	var toRemove = currentComputer.get_root().find_item_by_path(currentComputer, _parse_path(pathString), pathString)
+	var toRemove = currentComputer.get_root().find_item_by_path(currentComputer ,_parse_path(pathString), pathString)
 	
 	if currentComputer.get_active_directory() == toRemove:
 		currentComputer.set_active_directory(_parse_path("/"), "/")
@@ -493,7 +493,6 @@ func _parse_path(pathToParse: String) -> Array:
 	if pathToParse[0] != "/":
 		pathToParse = currentComputer.get_active_directory().get_directory_path() + pathToParse
 	
-	print(pathToParse)
 	
 	pathParsed.append("/")
 	

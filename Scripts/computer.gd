@@ -8,6 +8,7 @@ var _class = "Computer"
 
 const userPrefab = preload("res://Scenes/user.tscn")
 const directoryPrefab = preload("res://Scenes/directory.tscn")
+const filePrefab = preload("res://Scenes/file.tscn")
 const portPrefab = preload("res://Scenes/port.tscn")
 
 
@@ -26,45 +27,35 @@ var connectedNetNode: Net_Node
 var crashed: bool = false
 
 
-func _ready() -> void:
-	for user: User in users:
-		add_directory(user.get_user_name(), user.get_perms(),user.get_perms(), "/users/")
-
-
 #Runs on each 'refreshTimer' timeout
 func _refresh():
 	for user: User in users:
-		if root.find_item_by_path(self, _parse_path("/users/" + user.get_user_name() + "/"), "/users/" + user.get_user_name() + "/") != null:
-			break
-		add_directory(user.get_user_name(), user.get_perms(),user.get_perms(), "/users/")
+		if root.find_item_by_path(self ,_parse_path("/users/" + user.get_user_name() + "/"), "/users/" + user.get_user_name() + "/") != null:
+			continue
+		var userDir = add_directory(user.get_user_name(), user.get_perms(),user.get_perms(), "/users/", user)
+		userDir.set_parent_comp(self)
 
 
-#Changes this machine's ID
 func set_ID(newID: int) -> void:
 	computerID = newID
 
 
-#Returns this machine's ID
 func get_ID() -> int:
 	return computerID
 
 
-#Changes this machine's name
 func set_com_name(newName: String) -> void:
 	computerName = newName
 
 
-#Returns this machine's name
 func get_com_name() -> String:
 	return computerName
 
 
-#Returns this machine's root directory
 func get_root() -> Directory:
 	return root
 
 
-#Changes this machine's 'activeDirectory'
 func set_active_directory(dirPathParsed: Array, dirPath: String) -> int:
 	var returnedDirectory = root.find_item_by_path(self, dirPathParsed, dirPath)
 	if is_instance_valid(returnedDirectory) && returnedDirectory._class == "File":
@@ -77,20 +68,39 @@ func set_active_directory(dirPathParsed: Array, dirPath: String) -> int:
 	return 2
 
 
-#Returns the active 'directory'
 func get_active_directory() -> Directory:
 	return activeDirectory
 
 
-func add_directory(dirName: String, dirReadPerms: String,dirWritePerms: String, parentPath: String):
+func add_directory(dirName: String, dirReadPerms: String, dirWritePerms: String, parentPath: String, ownedBy: User = null):
 	var newDir: Directory = directoryPrefab.instantiate()
-	var parent: Directory = root.find_item_by_path(self ,_parse_path(parentPath), parentPath)
+	var parent: Directory = root.find_item_by_path(self, _parse_path(parentPath), parentPath)
 	if !is_instance_valid(parent):
-		return false
+		print("invalid" + parentPath)
+		return null
 	newDir.set_directory_name(dirName)
 	newDir.set_read_perms(dirReadPerms)
 	newDir.set_write_perms(dirWritePerms)
+	newDir.set_directory_owner(ownedBy)
+	newDir.realOnStart = false
 	parent.add_child(newDir)
+	return newDir
+
+
+func add_file(fileName: String, fileExtension: String, fileReadPerms: String, fileWritePerms: String, parentPath: String, parentDir: Directory = null):
+	var newFile: File = filePrefab.instantiate()
+	var parent: Directory = root.find_item_by_path(self, _parse_path(parentPath), parentPath)
+	if parentDir != null:
+		parent = parentDir
+	if !is_instance_valid(parent):
+		print("add file invalid: " + parentPath + "| Path parsed: " + str(_parse_path(parentPath)))
+		return null
+	newFile.set_file_name(fileName)
+	newFile.set_extension(fileExtension)
+	newFile.set_read_perms(fileReadPerms)
+	newFile.set_write_perms(fileWritePerms)
+	parent.add_child(newFile)
+	return newFile
 
 
 func remove_item(parsedPath: Array, Path: String):
@@ -108,7 +118,7 @@ func _parse_path(pathToParse: String) -> Array:
 	var pathParsed: Array
 	pathParsed.append("/")
 	
-	#Splits the string of arguments at each comma and appends the returned array to 'commandParsed'
+	#Splits the path at each slash and appends the returned array to 'pathParsed'
 	pathParsed.append_array(pathToParse.split("/", false))
 	#Loops through 'commandParsed' and removes spaces
 	for i in range(pathParsed.size()):
@@ -117,7 +127,7 @@ func _parse_path(pathToParse: String) -> Array:
 
 
 #Adds a 'user' to this machine, returns false if failure
-func add_user(newUserName: String, password: String = "", perms: String = "guest") -> bool:
+func add_user(newUserName: String, password: String = "", perms: String = "guest", crypto: float = 0) -> bool:
 	var newUser: User = userPrefab.instantiate()
 	for user in users:
 		if user.get_user_name() == newUserName:
@@ -126,6 +136,7 @@ func add_user(newUserName: String, password: String = "", perms: String = "guest
 	newUser.set_user_name(newUserName)
 	newUser.set_password(password)
 	newUser.set_perms(perms)
+	newUser.set_crypto(crypto)
 	self.add_child(newUser)
 	return true
 
@@ -139,6 +150,7 @@ func add_port(newPortNumber: int) -> bool:
 	self.add_child(newPort)
 	return true
 
+
 #Removes a 'user' from this machine, returns false if failure
 func remove_user(user: String) -> bool:
 	var toRemove = users.find(user)
@@ -148,17 +160,14 @@ func remove_user(user: String) -> bool:
 	return false
 
 
-#Returns Array of all this machine's 'users'
 func get_users() -> Array:
 	return users
 
 
-#Returns the active 'user' on this machine
 func get_active_user() -> User:
 	return activeUser
 
 
-#Returns the 'user' with the matching name 
 func find_user_by_name(searchName: String):
 	for user in users:
 		if user.get_user_name() == searchName:
@@ -174,11 +183,11 @@ func set_active_user(userName: String, password: String = "") -> bool:
 		return true
 	return false
 
-#Returns Array of this machine's 'ports'
+
 func get_ports() -> Array:
 	return ports
 
-#Returns the 'connectedNetNode'
+
 func get_connected_NetNode() -> Net_Node:
 	return connectedNetNode
 
