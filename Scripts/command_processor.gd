@@ -78,6 +78,8 @@ func process_command(input: String) -> String:
 			return balance(commandParsed)
 		"transfer":
 			return transfer(commandParsed)
+		"convert":
+			return convertCurrency(commandParsed)
 		"info":
 			return info(commandParsed)
 		"time":
@@ -97,7 +99,7 @@ func help(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "help")
 
-	return helpHelpMess + "\n" + userHelpMess + "\n" + luHelpMess + "\n" + lsHelpMess + "\n" + infoHelpMess + "\n" + timeHelpMess + "\n" + scanHelpMess + "\n" + comconHelpMess + "\n" + nodeconHelpMess + "\n" + cuHelpMess + "\n" + useraddHelpMess + "\n" + cdHelpMess + "\n" + mkdirHelpMess + "\n" + rmHelpMess + "\n" + catHelpMess + "\n" + shutdownHelpMess + "\n" + balanceHelpMess
+	return helpHelpMess + "\n" + userHelpMess + "\n" + luHelpMess + "\n" + lsHelpMess + "\n" + infoHelpMess + "\n" + timeHelpMess + "\n" + scanHelpMess + "\n" + comconHelpMess + "\n" + nodeconHelpMess + "\n" + cuHelpMess + "\n" + useraddHelpMess + "\n" + cdHelpMess + "\n" + mkdirHelpMess + "\n" + rmHelpMess + "\n" + catHelpMess + "\n" + balanceHelpMess + "\n" + transferHelpMess + "\n" + convertHelpMess + "\n" + shutdownHelpMess
 
 
 #Displays information on the current user
@@ -425,6 +427,7 @@ func scan(fullCommand: Array):
 
 
 #Transfers crypto from file to player account
+const transferHelpMess: String = "[color=green]transfer: - [/color]Transfers crypto from a '.cry' file to your account"
 func transfer(fullCommand: Array):
 	if fullCommand.size() != 2:
 		return _error_arg_number(fullCommand.size(), 1, "transfer")
@@ -455,6 +458,35 @@ func transfer(fullCommand: Array):
 	cryptoFile.set_crypto(0)
 	
 	return "[color=green]'%s'[/color] crypto has been transfered to your account!" % cryptoAmount
+
+
+#Converts the set amount of the player's crypto into cash and vice versa
+const convertHelpMess: String = "[color=green]convert:String -> outputCurrency(crypto/cash), float -> amountToConvert - [/color]Converts the set amount of the player's crypto into cash and vice versa"
+func convertCurrency(fullCommand: Array):
+	if fullCommand.size() != 3:
+		return _error_arg_number(fullCommand.size(), 2, "convert")
+	
+	var outputCurrency: String = fullCommand[1]
+	var amount: float = float(fullCommand[2])
+	
+	
+	if outputCurrency != "cash" && outputCurrency != "crypto":
+		return "Undefined currency type [color=red]'%s'[/color], must be [color=green]'cash'[/color] or [color=green]'crypto'[/color]!" % outputCurrency
+	
+	if amount <= 0:
+		return "Conversion amount must be greater than [color=red]0[/color]!"
+	
+	if outputCurrency == "cash" && player.get_crypto_balance() >= amount:
+		player.crypto_to_cash(amount)
+		player.crypto_transaction(-amount)
+		return "Successfully converted [color=green]'%s'[/color] crypto into cash!" % amount
+		
+	if outputCurrency == "crypto" && player.get_cash_balance() >= amount:
+		player.cash_to_crypto(amount)
+		player.cash_transaction(-amount)
+		return "Successfully converted [color=green]'%s'[/color] cash into crypto!" % amount
+		
+	return "[color=red]insufficient funds![/color]"
 
 
 #Returns the player's current funds and rent cost

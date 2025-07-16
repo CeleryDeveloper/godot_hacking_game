@@ -32,6 +32,7 @@ func cash_transaction(amount: float):
 func crypto_transaction(amount: float):
 	cryptoBalance += amount
 
+
 #Convert crypto to cash
 func crypto_to_cash(cryptoToConvert: float):
 	cashBalance += cryptoToConvert * cryptoConversion
