@@ -17,6 +17,7 @@ var lost: bool = false
 @onready var scrollBar = scroll.get_v_scroll_bar()
 @onready var networkManager = $NetworkManager
 @onready var input: LineEdit = $Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input
+@onready var player: Player = $Player
 
 
 func _ready() -> void:
@@ -66,6 +67,19 @@ func _player_passout():
 		passoutMessage.text = "You have [color=red]passed out[/color]! You will sleep for [color=red]eight hours[/color] and be returned to [color=green]home[/color]."
 		_add_response(passoutMessage)
 		commandProcessor.changeComputer(commandProcessor.home)
+
+
+func _charge_rent():
+	var rentMessage = ResponseNoHistory.instantiate()
+	player.cash_transaction(-player.get_rent_cost())
+	
+	if player.get_cash_balance() < 0:
+		lost = true
+		rentMessage.text = "You have [color=red]failed[/color] to pay rent and have been [color=red]evicted[/color]!"
+		_add_response(rentMessage)
+	else:
+		rentMessage.text = "You have [color=green]successfully[/color] payed rent and have been charged [color=red]'$%.2f'[/color]!" % player.get_rent_cost()
+		_add_response(rentMessage)
 
 
 #Navigates the history of inputs using arrow keys

@@ -5,6 +5,7 @@ var cryptoBalance: float = 0
 var cashBalance: float = 0
 #Amount of cash in one crypto
 var cryptoConversion: float = 100
+var rentCost: float = 500
 
 
 func get_cash_balance() -> float:
@@ -15,12 +16,20 @@ func get_crypto_balance() -> float:
 	return cryptoBalance
 
 
+func get_rent_cost() -> float:
+	return rentCost
+
+
 func set_cash_balance(newCashBalance: float):
 	cashBalance = newCashBalance
 
 
 func set_crypto_balance(newCryptoBalance: float):
 	cryptoBalance = newCryptoBalance
+
+
+func set_rent_cost(newCost: float):
+	rentCost = newCost 
 
 
 #Used for charging or adding cash to balance

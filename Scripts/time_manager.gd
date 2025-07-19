@@ -3,6 +3,7 @@ class_name TimeManager
 
 
 signal passout
+signal rentDue
 
 
 #Stores the custom 'class_name' 
@@ -17,7 +18,7 @@ var time: int = 0
 #The current day starting at 1
 var day: int = 1
 
-#The current day of the week starting at 0
+#The current day of the week starting at 0, because weekdays are stored in an array
 var currentWeekday: int = 0
 
 #The time in minutes since the player has last slept
@@ -52,7 +53,7 @@ func player_sleep():
 
 #Runs on 00:00 Sunday, handles the charging of rent to player
 func _rent_due():
-	pass
+	rentDue.emit()
 
 
 #Returns the current time in minutes since 00:00

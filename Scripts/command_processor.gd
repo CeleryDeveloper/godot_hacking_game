@@ -14,6 +14,7 @@ var home: Computer
 @onready var caret: Label = $"../Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Caret"
 @onready var timeManager: TimeManager = $"../TimeManager"
 @onready var player: Player = $"../Player"
+@onready var gameManager: Game = $".."
 
 func _initialize(startingComputer):
 	currentComputer = startingComputer
@@ -24,6 +25,9 @@ func _initialize(startingComputer):
 func process_command(input: String) -> String:
 	if currentComputer.crashed:
 		return "Current computer is [color=red]inoperational[/color]!"
+	
+	if gameManager.lost == true:
+		return "You have lost, [color=red]Game Over[/color]!"
 	
 	#Stores the command in 'commandHistory'
 	commandHistory.insert(0, input)
@@ -474,7 +478,7 @@ func convertCurrency(fullCommand: Array):
 		return "Undefined currency type [color=red]'%s'[/color], must be [color=green]'cash'[/color] or [color=green]'crypto'[/color]!" % outputCurrency
 	
 	if amount <= 0:
-		return "Conversion amount must be greater than [color=red]0[/color]!"
+		return "Conversion amount must be greater than [color=red]$0.00[/color]!"
 	
 	if outputCurrency == "cash" && player.get_crypto_balance() >= amount:
 		player.crypto_to_cash(amount)
@@ -484,7 +488,7 @@ func convertCurrency(fullCommand: Array):
 	if outputCurrency == "crypto" && player.get_cash_balance() >= amount:
 		player.cash_to_crypto(amount)
 		player.cash_transaction(-amount)
-		return "Successfully converted [color=green]'%s'[/color] cash into crypto!" % amount
+		return "Successfully converted [color=green]'$%.2f'[/color] cash into crypto!" % amount
 		
 	return "[color=red]insufficient funds![/color]"
 
@@ -495,7 +499,7 @@ func balance(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "balance")
 	
-	return "Cash balance: [color=green]'%.2f'[/color] \nCrypto balance: [color=green]'%.4f'[/color] \nRent: [color=red]N/A[/color]" % [player.get_cash_balance(), player.get_crypto_balance()]
+	return "Cash balance: [color=green]'$%.2f'[/color] \nCrypto balance: [color=green]'%.4f'[/color] \nRent: [color=red]'$%.2f'[/color]" % [player.get_cash_balance(), player.get_crypto_balance(), player.get_rent_cost()]
 
 
 #Returns information on the current computer

@@ -38,9 +38,9 @@ This is a small hacking game made in godot based on hacknet, greyhack, bitburner
   <h3>Upcoming features:</h3>
   <ul>
 	<li><del>Day/night cycle</del></li>
-	<li>Crypto currency</li>
+	<li><del>Crypto currency</del></li>
 	<li>Some kind of gameplay</li>
-	<li>Rent system</li>
+	<li><del>Rent system</del></li>
 	<li>Exploit discovery cycle</li> 
 	<li>Ingame notification system</li>
   </ul>
