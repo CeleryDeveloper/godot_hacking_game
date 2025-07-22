@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://cch5frrfejpts"]
+
+[ext_resource type="FontFile" uid="uid://67rccbw0m8xx" path="res://Fonts/VT323/VT323-Regular.ttf" id="1_3h7vn"]
+[ext_resource type="Script" uid="uid://ddji5kqwiy20l" path="res://Scripts/rhythem_note.gd" id="1_kf7wu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2wp57"]
+
+[node name="rhythemNote" type="Node2D"]
+script = ExtResource("1_kf7wu")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+scale = Vector2(2.64, 2.64)
+shape = SubResource("RectangleShape2D_2wp57")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(100, 100)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -59.99
+offset_right = 50.0
+offset_bottom = 40.01
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0, 0.792157, 0, 1)
+theme_override_fonts/normal_font = ExtResource("1_3h7vn")
+theme_override_font_sizes/normal_font_size = 100
+text = "a"
+horizontal_alignment = 1
+vertical_alignment = 1
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+
+[connection signal="area_entered" from="Area2D" to="." method="on_collision"]
