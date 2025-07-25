@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bmioc6k017hkp"]
+[gd_scene load_steps=9 format=3 uid="uid://bmioc6k017hkp"]
 
 [ext_resource type="Script" uid="uid://c5ymmpit8h4ay" path="res://Scripts/rhythm_game_manager.gd" id="1_gt65o"]
 [ext_resource type="PackedScene" uid="uid://cch5frrfejpts" path="res://Scenes/rhythem_note.tscn" id="2_43wq1"]
+[ext_resource type="Script" uid="uid://dj8q1b2ggn42" path="res://Scenes/rhythm_shield.gd" id="2_n64c0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0ckw0"]
 bg_color = Color(0.0687983, 0.0687983, 0.0687982, 1)
@@ -9,6 +10,10 @@ bg_color = Color(0.0687983, 0.0687983, 0.0687982, 1)
 [sub_resource type="CircleShape2D" id="CircleShape2D_0ckw0"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0ckw0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_43wq1"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_43wq1"]
 
 [node name="rhythm" type="Node2D"]
 script = ExtResource("1_gt65o")
@@ -27,17 +32,36 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_0ckw0")
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Core" type="Area2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Core"]
 scale = Vector2(5, 5)
 shape = SubResource("CircleShape2D_0ckw0")
 
-[node name="Sprite2D" type="Sprite2D" parent="Area2D"]
+[node name="Sprite2D" type="Sprite2D" parent="Core"]
 scale = Vector2(100, 100)
 texture = SubResource("PlaceholderTexture2D_0ckw0")
+
+[node name="RhythmShield" type="Node2D" parent="."]
+script = ExtResource("2_n64c0")
+
+[node name="Area2D" type="Area2D" parent="RhythmShield"]
+position = Vector2(120, 0)
+scale = Vector2(1, 6.62)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RhythmShield/Area2D"]
+shape = SubResource("RectangleShape2D_43wq1")
+
+[node name="Sprite2D" type="Sprite2D" parent="RhythmShield/Area2D"]
+scale = Vector2(20, 20)
+texture = SubResource("PlaceholderTexture2D_43wq1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="rhythemNote" parent="." instance=ExtResource("2_43wq1")]
 position = Vector2(234, 0)
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="spawn_random_note"]

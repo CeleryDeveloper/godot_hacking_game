@@ -1,12 +1,13 @@
 extends Node2D
 class_name RhythmManager
 
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
+const rhythemNotePrefab = preload("res://Scenes/rhythem_note.tscn")
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+func spawn_random_note():
+	var spawnLocArray: Array = [Vector2(0, 300), Vector2(300, 0), Vector2(0, -300), Vector2(-300, 0)]
+	var spawnLocation = spawnLocArray.pick_random()
+	var newNote = rhythemNotePrefab.instantiate()
+	newNote.position = spawnLocation
+	add_child(newNote)
+	
