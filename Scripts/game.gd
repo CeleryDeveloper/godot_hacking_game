@@ -3,6 +3,7 @@ class_name Game
 
 const ResponseNoHistory = preload("res://Scenes/responseNoHistory.tscn")
 const Response = preload("res://Scenes/response.tscn")
+const RhythmScene = preload("res://Scenes/rhythm.tscn")
 
 var maxScrollLength = 0
 var historyPos: int = -1
@@ -31,6 +32,7 @@ func _ready() -> void:
 	_add_response(startingMessage)
 	#Initializes the commandProcessor with the home computer
 	commandProcessor._initialize(networkManager.get_child(0))
+	print(get_children())
 
 
 func _process(_delta: float) -> void:
@@ -80,6 +82,22 @@ func _charge_rent():
 	else:
 		rentMessage.text = "You have [color=green]successfully[/color] payed rent and have been charged [color=red]'$%.2f'[/color]!" % player.get_rent_cost()
 		_add_response(rentMessage)
+
+
+func load_rhythm_scene(password: String):
+	var newScene: RhythmManager = RhythmScene.instantiate() 
+	newScene.set_password(password)
+	newScene.set_game_manager(self)
+	for child in get_children():
+		child.PROCESS_MODE_DISABLED
+	
+	add_child(newScene)
+
+
+func deload_rhythm_scene(rhythm: RhythmManager):
+	for child in get_children():
+		child.PROCESS_MODE_INHERIT
+	rhythm.queue_free()
 
 
 #Navigates the history of inputs using arrow keys

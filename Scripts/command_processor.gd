@@ -90,6 +90,8 @@ func process_command(input: String) -> String:
 			return time(commandParsed)
 		"shutdown":
 			return shutdown(commandParsed)
+		"decrypt":
+			return decrypt(commandParsed)
 		#Default case if 'command' is not recognized
 		_:
 			return "command [color=red]'%s'[/color] was not recognized!" % command
@@ -430,8 +432,22 @@ func scan(fullCommand: Array):
 	return listString
 
 
+#Returns the password of the provided user
+const decryptHelpMess: String = "[color=green]decrypt:String -> user - [/color]Returns the password of the provided user"
+func decrypt(fullCommand: Array):
+	if fullCommand.size() != 2:
+		return _error_arg_number(fullCommand.size(), 1, "transfer")
+	
+	var userToDecrypt: User = currentComputer.find_user_by_name(fullCommand[1])
+	if userToDecrypt == null:
+		return "user [color=red]'%s'[/color] does not exist!" % [fullCommand[1]]
+	
+	gameManager.load_rhythm_scene(userToDecrypt.get_password())
+	return userToDecrypt.get_password()
+
+
 #Transfers crypto from file to player account
-const transferHelpMess: String = "[color=green]transfer: - [/color]Transfers crypto from a '.cry' file to your account"
+const transferHelpMess: String = "[color=green]transfer:String -> path - [/color]Transfers crypto from a '.cry' file to your account"
 func transfer(fullCommand: Array):
 	if fullCommand.size() != 2:
 		return _error_arg_number(fullCommand.size(), 1, "transfer")

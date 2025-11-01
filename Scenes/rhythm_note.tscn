@@ -29,11 +29,16 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/default_color = Color(0, 0.792157, 0, 1)
 theme_override_fonts/normal_font = ExtResource("2_eqs1n")
-theme_override_font_sizes/normal_font_size = 100
+theme_override_font_sizes/normal_font_size = 70
 text = "a"
 horizontal_alignment = 1
 vertical_alignment = 1
 deselect_on_focus_loss_enabled = false
 drag_and_drop_selection_enabled = false
 
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
 [connection signal="area_entered" from="Area2D" to="." method="on_collision"]
+[connection signal="timeout" from="Timer" to="." method="random_text"]

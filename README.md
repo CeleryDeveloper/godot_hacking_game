@@ -7,18 +7,32 @@ This is a small hacking game made in godot based on hacknet, greyhack, bitburner
 	<li>File system(wip)</li>
 	<li>Computers can crash</li>
 	<li>Player can connect to other computers</li>
-  </ul>
-  <li>Randomly generated users</li>
-  <ul>
 	<li>User permissions</li>
 	<li>Random passwords</li>
+  </ul>
+  <li>Currency System</li>
+  <ul>
+	<li>Crypto currency</li>
+	<li>Cash</li>
+	<li>Stealing crypto</li>
+	<li>Rent system</li>
   </ul>
   <li>Commands based on linux commands</li>
   <ul>
 	<li>ls: lists files</li>
 	<li>cat: writes file to terminal</li>
 	<li>mkdir: makes a directory</li>
-	<li>And more!</li>
+	<li>And many more!</li>
+  </ul>
+  <li>Minigames</li>
+  <ul>
+	<li>"Rhythm" game</li>
+	<li>More to come!</li>
+  </ul>
+  <li>Miscellaneous</li>
+  <ul>
+	<li>Music</li>
+	<li>Day/night cycle</li>
   </ul>
 </ol>
 
@@ -39,7 +53,7 @@ This is a small hacking game made in godot based on hacknet, greyhack, bitburner
   <ul>
 	<li><del>Day/night cycle</del></li>
 	<li><del>Crypto currency</del></li>
-	<li>Some kind of gameplay</li>
+	<li><del>Some kind of gameplay</del></li>
 	<li><del>Rent system</del></li>
 	<li>Exploit discovery cycle</li> 
 	<li>Ingame notification system</li>
@@ -55,10 +69,11 @@ Once the game is in a playable state I'll put an actual build somewhere,
 but for now this is the easiest way to run the game!
 </p>
 <ol>
-  <li>Install Godot version 4.4.1, this can be done through steam.</li>
+  <li>Install Godot version 4.5.1*, this can be done through steam.</li>
   <li>Download the code, click the green code dropdown on this page then download as zip</li>
   <li>Extract the files</li>
   <li>Open godot and click "import" in the top left then import the project folder</li>
   <li>Once imported select the project in the list and click "run" on the right</li>
   <li>Have fun!</li>
 </ol>
+<h6>*Any more recent version will probably work fine, but use this one to be safe</h6>

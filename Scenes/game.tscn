@@ -26,9 +26,9 @@ bg_color = Color(0, 0, 0, 0.470588)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jr0uj"]
 bg_color = Color(0, 0.0509804, 0, 0.364706)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b1b2a"]
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s5vtn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b1b2a"]
 
 [node name="Game" type="Control"]
 layout_mode = 3
@@ -122,8 +122,8 @@ theme_override_constants/outline_size = 0
 theme_override_constants/caret_width = 10
 theme_override_fonts/font = ExtResource("5_wrohv")
 theme_override_font_sizes/font_size = 25
-theme_override_styles/focus = SubResource("StyleBoxEmpty_b1b2a")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_s5vtn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_b1b2a")
 caret_blink = true
 script = ExtResource("1_h1hun")
 
