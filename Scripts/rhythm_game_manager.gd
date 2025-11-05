@@ -5,19 +5,47 @@ const rhythemNotePrefab = preload("res://Scenes/rhythm_note.tscn")
 
 @onready var hurtSound: AudioStreamPlayer = $HurtSound
 @onready var hitSound: AudioStreamPlayer = $HitSound
-@onready var hpCounter: RichTextLabel = $Core/HPCounter
+@onready var CoreSprite: AnimatedSprite2D = $Core/CoreSprite
 @onready var passDisplay: RichTextLabel = $RichTextLabel
 
 var gameManager: Game
 var password: String = "abcdefg"
 var lastHurtPitch: float = 1.0
 var score: int = 0
+var startingHp: int = 5
 var hp: int = 5
 var difficulty: float = 0.3
+
+#I'M SO SORRY
+#These are arrays of frame numbers for each starting hp value, I probably could
+#have just reordered the frames :(
+var spriteArr5: Array[int] = [19, 17, 14, 10, 5, 0]
+var spriteArr4: Array[int] = [18, 15, 11, 6, 1]
+var spriteArr3: Array[int] = [16, 12, 7, 2]
+var spriteArr2: Array[int] = [13, 8, 3]
+var spriteArr1: Array[int] = [9, 4]
+
+#This is assigned the value of the sprite array that will be used
+var spriteArr: Array[int]
 
 
 func _ready():
 	passDisplay.text = password
+	hp = startingHp
+	
+	match startingHp:
+		5:
+			spriteArr = spriteArr5
+		4:
+			spriteArr = spriteArr4
+		3:
+			spriteArr = spriteArr3
+		2:
+			spriteArr = spriteArr2
+		1:
+			spriteArr = spriteArr1
+	
+	CoreSprite.frame = spriteArr[hp]
 
 
 #Spawns a note above or below the core or to the left or right of it
@@ -50,7 +78,12 @@ func play_hit_sound(minPitch: float,  maxPitch: float):
 
 #Changes the hp display in game to match the hp value
 func update_hp_counter():
-	hpCounter.text = str(hp)
+	CoreSprite.frame = spriteArr[hp]
+	print(hp)
+	
+	if hp == 0:
+		failure()
+	
 
 
 #Runs when a note hits the core
@@ -71,13 +104,14 @@ func shield_collision():
 
 #Runs when the password is fully uncovered
 func success():
-	gameManager.deload_rhythm_scene(self)
 	print("winner!")
+	gameManager.deload_rhythm_scene(self)
 
 
 #Runs when hp is zero
 func failure():
-	pass
+	print("Dissapointment.")
+	gameManager.deload_rhythm_scene(self)
 
 
 func set_password(newPass: String):

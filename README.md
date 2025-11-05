@@ -76,4 +76,4 @@ but for now this is the easiest way to run the game!
   <li>Once imported select the project in the list and click "run" on the right</li>
   <li>Have fun!</li>
 </ol>
-<h6>*Any more recent version will probably work fine, but use this one to be safe</h6>
+<h6>*Any more recent version will probably work fine, but use this one to be safe.</h6>

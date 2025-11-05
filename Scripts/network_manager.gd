@@ -19,9 +19,9 @@ var connectedComputers: Array
 var connectedNetNodes: Array
 
 #Arrays for 'computer' generation
-var computerNameGenPrefix = ["Cool", "Epic", "Lame", "Super", "Potato", "Sexy", "New", "Trash", "Secure", "Premium", "Ultimate", "Uber", "Hacker", "Pirate", "Private", "Speedy"]
+var computerNameGenPrefix = ["Cool", "Epic", "Lame", "Super", "Potato", "Sexy", "New", "Trash", "Secure", "Premium", "Ultimate", "Uber", "Hacker", "Pirate", "Private", "Speedy", "Freaky", "Depressed"]
 var computerNameGenSuffix = ["Computer", "PC", "Laptop", "Comp", "Workstation", "Battlestation", "Machine", "Server", "Desktop", "Cruncher", "Processor", "PersonalComputer", "GamingPC"]
-var computerUserGen = ["Tracy", "Robert", "Sam", "Cherry", "Lynn", "Thor", "Daddy", "User", "XxRogueWarriorxX", "Viper", "Admin", "Corprate", "Amy", "Jared", "AJ", "Sammy", "Bob", "Jimmy", "Ford", "Wizard", "Sorcerer", "Mage", "Terance"]
+var computerUserGen = ["Tracy", "Robert", "Sam", "Cherry", "Lynn", "Zeus", "Daddy", "User", "XxRogueWarriorxX", "Viper", "Admin", "Corprate", "Amy", "Jared", "AJ", "Sammy", "Bob", "Jimmy", "Ford", "Wizard", "Sorcerer", "Mage", "Terance"]
 
 
 #Arrays for 'NetNode' generation
@@ -31,7 +31,7 @@ var netNodeCompanyNameGen = ["GlobalNetworks", "CyberSec", "SilverComputers", "S
 
 
 #Arrays for 'password' generation
-var passwordGenPrefix = ["love", "Sexy", "sad", "g00d", "BAD", "Super", "ev1l", "Stup1d", "m1SSin9", "4wEs0me", "AwFu1", "SeCUrE", "H4cKeR", "P0RT", "Pr1vate"]
+var passwordGenPrefix = ["love", "Sexy", "sad", "g00d", "BAD", "Super", "ev1l", "Stup1d", "m1SSin9", "4wEs0me", "AwFu1", "SeCUrE", "H4cKeR", "P0RT", "Pr1vate", "ST0P", "Y1pp1E", "D1ssAp0intM3NT"]
 var passwordGenSuffix = ["", "password", "daddy", "GUY", "K3Y", "Dexter", "Spike", "Spagett1", "bEEfStr0gan0ff", "g0d", "p1easeD0n'tHackMEi'mSORRY!", "h4CkEr", "B0X", "K1TtEn2", "C0mpU1ER", "admin", "P1r4t3", "w1Z4rd", "S0rc3r3r", "m4G3"]
 
 
