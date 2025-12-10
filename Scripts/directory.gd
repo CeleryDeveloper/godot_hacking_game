@@ -35,7 +35,7 @@ func get_directory_name() -> String:
 
 #Updates the content of 'path'
 func _update_path():
-	if get_parent()._class == "Directory":
+	if get_parent() is Directory:
 		path = get_parent().get_directory_path() + directoryName + "/"
 	elif directoryName == "/":
 		path = "/"

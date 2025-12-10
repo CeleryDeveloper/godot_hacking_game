@@ -9,12 +9,14 @@ const rhythemNotePrefab = preload("res://Scenes/rhythm_note.tscn")
 @onready var passDisplay: RichTextLabel = $RichTextLabel
 
 var gameManager: Game
-var password: String = "abcdefg"
+var password: String = "PLEASe HEPL I'm STUck In A COmPUTER!"
+var userToDecrypt: User = null
 var lastHurtPitch: float = 1.0
 var score: int = 0
 var startingHp: int = 5
 var hp: int = 5
 var difficulty: float = 0.3
+
 
 #I'M SO SORRY
 #These are arrays of frame numbers for each starting hp value, I probably could
@@ -105,17 +107,29 @@ func shield_collision():
 #Runs when the password is fully uncovered
 func success():
 	print("winner!")
-	gameManager.deload_rhythm_scene(self)
+	gameManager.deload_rhythm_scene(self, true, userToDecrypt)
 
 
 #Runs when hp is zero
 func failure():
 	print("Dissapointment.")
-	gameManager.deload_rhythm_scene(self)
+	gameManager.deload_rhythm_scene(self, false, userToDecrypt)
+
+
+func get_password() -> String:
+	return password
 
 
 func set_password(newPass: String):
 	password = newPass
+
+
+func get_user() -> User:
+	return userToDecrypt
+
+
+func set_user(newUser: User):
+	userToDecrypt = newUser
 
 
 func set_game_manager(newManager: Game):

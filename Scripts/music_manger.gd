@@ -4,11 +4,11 @@ class_name MusicManager
 @onready var level1: AudioStreamPlayer = $MusicLevel1
 
 var chaosLevel: float = 1
-var chaosLevel1PlayChance: int = 60
+var chaosLevel1PlayChance: int = 60 
 var currentTrack: AudioStreamPlayer = null
-var currentTrackStartingVolume: int = 0
+var currentTrackStartingVolume: float = 0
 var fadeInAmount: float = 0
-
+ 
 
 #Function that runs every the 'MusicTimer' emits a signal
 #Plays the appropriate track based on 'chaosLevel' (WIP)

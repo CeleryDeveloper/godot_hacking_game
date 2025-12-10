@@ -137,6 +137,7 @@ func changeUser(fullCommand: Array):
 		#Sets 'active directory' to home if the new user doesn't meet permissions
 		if !currentComputer.get_active_user().eval_perms(currentComputer.get_active_directory().get_read_perms()):
 			currentComputer.set_active_directory(_parse_path("/"), "/")
+		currentComputer.get_active_user().set_pass_revealed(true)
 		return "Changed to user [color=green]'%s'[/color]." % fullCommand[1]
 	return "command failed, incorrect [color=red]password[/color] or user [color=red]'%s'[/color] does not exist!" % fullCommand[1]
 
@@ -159,7 +160,10 @@ func listUsers(fullCommand: Array):
 		userListString += str(i + 1) + ". " + users[i].get_user_name() + ": "
 		if users[i] == currentComputer.get_active_user():
 			userListString += "[/color]"
-		userListString += users[i].get_password() + "\n"
+		if users[i].get_pass_revealed() == true:
+			userListString += "[color=green]" + users[i].get_password() + "[/color]" + "\n"
+		if users[i].get_pass_revealed() == false:
+			userListString += "[color=red]" + users[i].get_obscured_password() + "[/color]" + "\n"
 	
 	return userListString
 
@@ -191,7 +195,7 @@ func addUser(fullCommand: Array) -> String:
 	if currentComputer.get_active_user().get_perms() != "root" && perms == "root":
 		return "Users with [color=red]'%s'[/color] permissions cannot create a user with root access!" % currentComputer._get_active_user()._get_perms()
 	
-	currentComputer.add_user(username, password, perms)
+	currentComputer.add_user(username, password, perms, 0, true)
 	
 	return "Created user [color=green]%s[/color]!" % username
 
@@ -439,11 +443,13 @@ func decrypt(fullCommand: Array):
 		return _error_arg_number(fullCommand.size(), 1, "transfer")
 	
 	var userToDecrypt: User = currentComputer.find_user_by_name(fullCommand[1])
+	#Returns error if 'userToDecrypt' does not exist
 	if userToDecrypt == null:
 		return "user [color=red]'%s'[/color] does not exist!" % [fullCommand[1]]
 	
-	gameManager.load_rhythm_scene(userToDecrypt.get_password())
-	return userToDecrypt.get_password()
+	#Loads 'rhythm' mini game
+	gameManager.load_rhythm_scene(userToDecrypt)
+	return "decrypting..."
 
 
 #Transfers crypto from file to player account
@@ -466,6 +472,7 @@ func transfer(fullCommand: Array):
 	
 	cryptoFile = currentComputer.get_root().find_item_by_path(currentComputer, _parse_path(pathString), pathString)
 	
+	#Errors if file doesn't exist or player lacks premissions
 	if cryptoFile == null:
 		return "file [color=red]'%s'[/color] does not exist!" % [fullCommand[1]]
 	if currentComputer.activeUser.eval_perms(cryptoFile.get_write_perms()) == false:
@@ -473,6 +480,7 @@ func transfer(fullCommand: Array):
 	
 	cryptoAmount = cryptoFile.get_crypto()
 	
+	#Adds crypto to players balance
 	player.crypto_transaction(cryptoAmount)
 	
 	cryptoFile.set_crypto(0)

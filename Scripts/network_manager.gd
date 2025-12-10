@@ -56,9 +56,9 @@ func get_netNodes() -> Array:
 #Adds all children of type 'computer' or 'Net_Node' on 'network manager' to 'connectedComputer'
 func _refresh_connected_children():
 	for child in get_children():
-		if connectedComputers.find(child) == -1 && child._class == "Computer":
+		if connectedComputers.find(child) == -1 && child is Computer:
 			connectedComputers.append(child)
-		if connectedNetNodes.find(child) == -1 && child._class == "Net_Node":
+		if connectedNetNodes.find(child) == -1 && child is Net_Node:
 			connectedNetNodes.append(child)
 
 
@@ -135,7 +135,7 @@ func _random_computer():
 	
 	#Picks if 'mainUser' should have crypto
 	var mainCrypto: float = 0
-	if randi_range(1, 2):
+	if randi_range(1, 2) == 1:
 		mainCrypto = randf_range(0.01, 1.5)
 	
 	#Picks if the 'mainUser' should have root perms

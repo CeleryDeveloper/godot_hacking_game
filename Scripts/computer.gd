@@ -2,14 +2,11 @@ extends Node
 class_name Computer
 
 
-#Stores the custom 'class_name'
-var _class = "Computer"
-
-
 const userPrefab = preload("res://Scenes/user.tscn")
 const directoryPrefab = preload("res://Scenes/directory.tscn")
 const filePrefab = preload("res://Scenes/file.tscn")
 const portPrefab = preload("res://Scenes/port.tscn")
+
 
 
 @export var computerName: String = "NameTemp"
@@ -128,11 +125,13 @@ func _parse_path(pathToParse: String) -> Array:
 
 
 #Adds a 'user' to this machine, returns false if failure
-func add_user(newUserName: String, password: String = "", perms: String = "guest", crypto: float = 0) -> bool:
+func add_user(newUserName: String, password: String = "", perms: String = "guest", crypto: float = 0, createdByPlayer: bool = false) -> bool:
 	var newUser: User = userPrefab.instantiate()
 	for user in users:
 		if user.get_user_name() == newUserName:
 			return false
+	if createdByPlayer == true:
+		newUser.set_pass_revealed(true)
 	users.append(newUser)
 	newUser.set_user_name(newUserName)
 	newUser.set_password(password)

@@ -1,12 +1,13 @@
 extends Node2D
 class_name RhythemNote
 
+const characters: String = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890!@#$%^&*()`~-_=+{}[];':,./<>?|"
+
 @onready var startPos: Vector2 = Vector2(0, 0)
 @onready var time: float = 0
 @onready var textLabel: RichTextLabel = $RichTextLabel
 
 var difficulty: float
-var characters: String = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890!@#$%^&*()`~-_=+{}[];':,./<>?|"
 var charLen: int
 
 signal core_collision_signal
@@ -19,8 +20,8 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
-	time += delta * 0.4
-
+	time += delta * difficulty
+ 
 	self.position = startPos.lerp(Vector2(0, 0), time)
 
 

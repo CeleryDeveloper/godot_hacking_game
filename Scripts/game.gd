@@ -66,16 +66,21 @@ func _player_passout():
 		passoutMessage.text = "You have [color=red]passed out[/color]! You will sleep for [color=red]eight hours[/color]."
 		_add_response(passoutMessage)
 	else:
+		#returns player to home
 		passoutMessage.text = "You have [color=red]passed out[/color]! You will sleep for [color=red]eight hours[/color] and be returned to [color=green]home[/color]."
 		_add_response(passoutMessage)
 		commandProcessor.changeComputer(commandProcessor.home)
 
 
+#Charges player rent
 func _charge_rent():
 	var rentMessage = ResponseNoHistory.instantiate()
+	
+	#Subtracts rent from player's balance
 	player.cash_transaction(-player.get_rent_cost())
 	
 	if player.get_cash_balance() < 0:
+		#Makes player lose if they can't pay rent
 		lost = true
 		rentMessage.text = "You have [color=red]failed[/color] to pay rent and have been [color=red]evicted[/color]!"
 		_add_response(rentMessage)
@@ -84,19 +89,43 @@ func _charge_rent():
 		_add_response(rentMessage)
 
 
-func load_rhythm_scene(password: String):
-	var newScene: RhythmManager = RhythmScene.instantiate() 
-	newScene.set_password(password)
+#Loads the rhythm game
+func load_rhythm_scene(userToDecrypt: User):
+	var newScene: RhythmManager = RhythmScene.instantiate()
+	newScene.set_user(userToDecrypt)
+	newScene.set_password(userToDecrypt.get_password())
 	newScene.set_game_manager(self)
+	
+	#Disables all children of 'game' so they don't cause issues during the mini game
 	for child in get_children():
 		child.PROCESS_MODE_DISABLED
 	
+	#Makes it so player can't type in the input while playing 'rhythm'
+	input.release_focus()
 	add_child(newScene)
 
 
-func deload_rhythm_scene(rhythm: RhythmManager):
+#Deloads the rhythm game
+func deload_rhythm_scene(rhythm: RhythmManager, winState: bool, user: User):
+	var decryptMessage = ResponseNoHistory.instantiate()
+	
+	#Re-enables all children of 'game'
 	for child in get_children():
 		child.PROCESS_MODE_INHERIT
+	
+	#Win/fail message
+	if winState == true:
+		decryptMessage.text = "[color=green]Successfully[/color] decrypted password! \n[color=green]Password: %s[/color]" % rhythm.get_password()
+		#Sets the user's password that is being decrypted to revealed 
+		#so it can be seen in the 'lu' command
+		user.set_pass_revealed(true)
+	else:
+		decryptMessage.text = "[color=red]Failed[/color] to decrypt password!"
+	_add_response(decryptMessage)
+	
+	#Makes player be able to type in input after rhythm is over
+	input.grab_focus()
+	
 	rhythm.queue_free()
 
 
