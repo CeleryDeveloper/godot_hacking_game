@@ -18,7 +18,6 @@ var passRevealed: bool = false
 func _ready() -> void:
 	for c in range(userPassword.length()):
 		obscuredPassword += characters[randi_range(0, characters.length() - 1)]
-		print(obscuredPassword)
 
 
 func get_user_name() -> String:

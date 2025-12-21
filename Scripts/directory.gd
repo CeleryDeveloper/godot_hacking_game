@@ -128,8 +128,8 @@ func find_item_by_path(parentCompLocal: Computer, pathParsed: Array, pathIn: Str
 			return child
 	var childNames: Array[String]
 	for child in children:
-		childNames.append(child.get_directory_name())
-	print("Failed" + " Path: " + path + " Parsed name: " + pathParsed[selfParsed.size()] + " Children: " + str(childNames))
+		if child is Directory:
+			childNames.append(child.get_directory_name())
 	return null
 
 

@@ -105,7 +105,7 @@ func help(fullCommand: Array):
 	if fullCommand.size() != 1:
 		return _error_arg_number(fullCommand.size(), 0, "help")
 
-	return helpHelpMess + "\n" + userHelpMess + "\n" + luHelpMess + "\n" + lsHelpMess + "\n" + infoHelpMess + "\n" + timeHelpMess + "\n" + scanHelpMess + "\n" + comconHelpMess + "\n" + nodeconHelpMess + "\n" + cuHelpMess + "\n" + useraddHelpMess + "\n" + cdHelpMess + "\n" + mkdirHelpMess + "\n" + rmHelpMess + "\n" + catHelpMess + "\n" + balanceHelpMess + "\n" + transferHelpMess + "\n" + convertHelpMess + "\n" + shutdownHelpMess
+	return helpHelpMess + "\n" + userHelpMess + "\n" + luHelpMess + "\n" + lsHelpMess + "\n" + infoHelpMess + "\n" + timeHelpMess + "\n" + scanHelpMess + "\n" + comconHelpMess + "\n" + nodeconHelpMess + "\n" + decryptHelpMess + "\n" + cuHelpMess + "\n" + useraddHelpMess + "\n" + cdHelpMess + "\n" + mkdirHelpMess + "\n" + rmHelpMess + "\n" + catHelpMess + "\n" + balanceHelpMess + "\n" + transferHelpMess + "\n" + convertHelpMess + "\n" + shutdownHelpMess
 
 
 #Displays information on the current user
@@ -214,8 +214,8 @@ func listItems(fullCommand: Array):
 	for i in range(items.size()):
 		if !is_instance_valid(items[i]):
 			continue
-		if items[i]._class == "File":
-			fileListString += str(i + 1) + ". " + "[color=green]" + items[i].get_file_name() + items[i].get_extension() + ":[/color] "
+		if items[i] is File:
+			fileListString += str(i + 1) + ". " + "[color=cyan]" + items[i].get_file_name() + items[i].get_extension() + ":[/color] "
 		else:	
 			fileListString += str(i + 1) + ". " + "[color=green]" + items[i].get_directory_name() + ":[/color] "
 			
@@ -254,7 +254,7 @@ func changeDirectory(fullCommand: Array):
 
 
 #Creates a 'directory' with the specified details on the current machine
-const mkdirHelpMess: String = "[color=green]mkdir:String -> name, String -> parent path('.' for current directory), (optional)String -> read permissions, (optional)String -> write permissions - [/color]Creates a directory with the specified name under the parent directory."
+const mkdirHelpMess: String = "[color=green]mkdir:String -> name, String -> parent path('.' for current directory), (optional)String -> read permissions, (optional)String -> write permissions - [/color]Creates a directory with \nthe specified name under the parent directory."
 func makeDirectory(fullCommand: Array) -> String:
 	if fullCommand.size() < 3 || fullCommand.size() > 5:
 		return _error_arg_number(fullCommand.size(), 2, "mkdir", 2)
