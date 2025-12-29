@@ -92,6 +92,9 @@ func process_command(input: String) -> String:
 			return shutdown(commandParsed)
 		"decrypt":
 			return decrypt(commandParsed)
+		"not":
+			gameManager.create_notification("TEST", "test")
+			return "WIROORLLDSD WOKR PLEASDE"
 		#Default case if 'command' is not recognized
 		_:
 			return "command [color=red]'%s'[/color] was not recognized!" % command

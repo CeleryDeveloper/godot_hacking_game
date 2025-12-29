@@ -4,6 +4,7 @@ class_name Game
 const ResponseNoHistory = preload("res://Scenes/responseNoHistory.tscn")
 const Response = preload("res://Scenes/response.tscn")
 const RhythmScene = preload("res://Scenes/rhythm.tscn")
+const notificationScene = preload("res://Scenes/notification.tscn")
 
 var maxScrollLength = 0
 var historyPos: int = -1
@@ -178,7 +179,17 @@ func _on_input_text_submitted(new_text: String) -> void:
 func _add_response(response: Control):
 	terminalHistory.add_child(response)
 	_clean_history()
+
+
+#Creates a notification and begins its animation
+func create_notification(header: String, content: String):
+	var newNotification: Notification = notificationScene.instantiate()
 	
+	newNotification.set_header_text("header")
+	newNotification.set_content_text("content")
+	
+	add_child(newNotification)
+
 
 #Clears "terminalHistory" when the number of responses is greater than "maxHistory"
 func _clean_history():
