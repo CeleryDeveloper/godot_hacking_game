@@ -33,7 +33,6 @@ func _ready() -> void:
 	_add_response(startingMessage)
 	#Initializes the commandProcessor with the home computer
 	commandProcessor._initialize(networkManager.get_child(0))
-	print(get_children())
 
 
 func _process(_delta: float) -> void:
@@ -84,9 +83,11 @@ func _charge_rent():
 		#Makes player lose if they can't pay rent
 		lost = true
 		rentMessage.text = "You have [color=red]failed[/color] to pay rent and have been [color=red]evicted[/color]!"
+		create_notification("[color=red]Evicted![/color]", "You have [color=red]failed[/color] to pay rent and have been removed from your apartment!")
 		_add_response(rentMessage)
 	else:
 		rentMessage.text = "You have [color=green]successfully[/color] payed rent and have been charged [color=red]'$%.2f'[/color]!" % player.get_rent_cost()
+		create_notification("[color=green]Rent Paid![/color]", "Your rent has [color=green]successfully[/color] been paid!")
 		_add_response(rentMessage)
 
 
@@ -185,8 +186,9 @@ func _add_response(response: Control):
 func create_notification(header: String, content: String):
 	var newNotification: Notification = notificationScene.instantiate()
 	
-	newNotification.set_header_text("header")
-	newNotification.set_content_text("content")
+	newNotification.set_game_manager(self)
+	newNotification.set_header_text(header)
+	newNotification.set_content_text(content)
 	
 	add_child(newNotification)
 

@@ -16,8 +16,8 @@ script = ExtResource("1_wohpn")
 
 [node name="PanelOut" type="PanelContainer" parent="."]
 layout_mode = 0
-offset_right = 520.625
-offset_bottom = 113.0
+offset_right = 350.0
+offset_bottom = 123.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_wohpn")
 
 [node name="Margin" type="MarginContainer" parent="PanelOut"]
@@ -28,26 +28,32 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="PanelIn" type="PanelContainer" parent="PanelOut/Margin"]
-custom_minimum_size = Vector2(500.625, 0)
 layout_mode = 2
 
-[node name="Rows" type="VBoxContainer" parent="PanelOut/Margin/PanelIn"]
-custom_minimum_size = Vector2(491.175, 0)
+[node name="Margin" type="MarginContainer" parent="PanelOut/Margin/PanelIn"]
 layout_mode = 2
-size_flags_horizontal = 4
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
 
-[node name="Header" type="RichTextLabel" parent="PanelOut/Margin/PanelIn/Rows"]
+[node name="Rows" type="VBoxContainer" parent="PanelOut/Margin/PanelIn/Margin"]
+layout_mode = 2
+
+[node name="Header" type="RichTextLabel" parent="PanelOut/Margin/PanelIn/Margin/Rows"]
 custom_minimum_size = Vector2(0, 30.11)
 layout_mode = 2
 theme_override_fonts/normal_font = ExtResource("1_0gtv2")
 theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
 text = "OH GOD I MESSED UP!"
 
-[node name="Content" type="RichTextLabel" parent="PanelOut/Margin/PanelIn/Rows"]
+[node name="Content" type="RichTextLabel" parent="PanelOut/Margin/PanelIn/Margin/Rows"]
 custom_minimum_size = Vector2(0, 59.35)
 layout_mode = 2
 theme_override_fonts/normal_font = ExtResource("1_0gtv2")
 theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
 text = "THIS IS THE DEFAULT NOTIFICATION AND SHOULD NOT BE SHOWN!"
 
 [node name="Timer" type="Timer" parent="."]
