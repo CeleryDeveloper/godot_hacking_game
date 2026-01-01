@@ -7,6 +7,7 @@ const rhythemNotePrefab = preload("res://Scenes/rhythm_note.tscn")
 @onready var hitSound: AudioStreamPlayer = $HitSound
 @onready var CoreSprite: AnimatedSprite2D = $Core/CoreSprite
 @onready var passDisplay: RichTextLabel = $RichTextLabel
+@onready var shield: RhythmShield = $RhythmShield
 
 var gameManager: Game
 var password: String = "PLEASe HEPL I'm STUck In A COmPUTER!"
@@ -34,6 +35,7 @@ var spriteArr: Array[int]
 func _ready():
 	passDisplay.text = password
 	hp = startingHp
+	shield.set_difficulty(difficulty)
 	
 	match startingHp:
 		5:
@@ -52,7 +54,7 @@ func _ready():
 
 #Spawns a note above or below the core or to the left or right of it
 func spawn_random_note():
-	var spawnLocArray: Array = [Vector2(0, 300), Vector2(300, 0), Vector2(0, -300), Vector2(-300, 0)]
+	var spawnLocArray: Array = [Vector2(0, 300 * (1 + difficulty)), Vector2(300 * (1 + difficulty), 0), Vector2(0, -300 * (1 + difficulty)), Vector2(-300 * (1 + difficulty), 0)]
 	var spawnLocation = spawnLocArray.pick_random()
 	var newNote: RhythemNote = rhythemNotePrefab.instantiate()
 	newNote.set_difficulty(difficulty)
@@ -134,3 +136,7 @@ func set_user(newUser: User):
 
 func set_game_manager(newManager: Game):
 	gameManager = newManager
+
+
+func set_difficulty(newDiff: float):
+	difficulty = newDiff

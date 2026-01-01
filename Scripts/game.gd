@@ -6,6 +6,7 @@ const Response = preload("res://Scenes/response.tscn")
 const RhythmScene = preload("res://Scenes/rhythm.tscn")
 const notificationScene = preload("res://Scenes/notification.tscn")
 
+
 var maxScrollLength = 0
 var historyPos: int = -1
 var lost: bool = false
@@ -13,13 +14,16 @@ var lost: bool = false
 #Dosn't apply to _navigate_history, only Response nodes
 @export var maxHistory: int = 30
 
-@onready var commandProcessor:CommandProcessor = $CommandProcessor
+@onready var commandProcessor: CommandProcessor = $CommandProcessor
 @onready var terminalHistory = $Terminal/MarginContainer/Rows/Stdout/ScrollContainer/TerminalHistory
 @onready var scroll = $Terminal/MarginContainer/Rows/Stdout/ScrollContainer
 @onready var scrollBar = scroll.get_v_scroll_bar()
 @onready var networkManager = $NetworkManager
 @onready var input: LineEdit = $Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input
 @onready var player: Player = $Player
+@onready var difficultyManager: DifficultyManager = $DifficultyManager
+#Used in 'load_rhythm_scene'
+@onready var minigameShutdownExcludedNodes: Array = [difficultyManager, player, $MusicManager, $TimeManager, $MinuteTimer, $MusicTimer]
 
 
 func _ready() -> void:
@@ -97,9 +101,13 @@ func load_rhythm_scene(userToDecrypt: User):
 	newScene.set_user(userToDecrypt)
 	newScene.set_password(userToDecrypt.get_password())
 	newScene.set_game_manager(self)
+	newScene.set_difficulty(difficultyManager.get_difficulty())
 	
-	#Disables all children of 'game' so they don't cause issues during the mini game
+	#Disables all children of 'game' so they don't cause issues during the mini game, 
+	#excluding nodes in 'minigameShutdownExcludedNodes'.
 	for child in get_children():
+		if child in minigameShutdownExcludedNodes:
+			continue
 		child.PROCESS_MODE_DISABLED
 	
 	#Makes it so player can't type in the input while playing 'rhythm'

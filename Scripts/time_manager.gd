@@ -8,12 +8,14 @@ signal rentDue
 
 #Stores the custom 'class_name' 
 #as there is no way to access the name declared using the 'class_name' keyword
-const _class: String = "TimeManager"
 const weekDays: Array[String] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+#Time of day in minutes when difficulty should increase 
+const diffIncreaseTimes: Array[int] = [720, 1440]
 
+@onready var difficultyManager: DifficultyManager = $"../DifficultyManager"
 
 #The time in minutes from 00:00
-var time: int = 0
+var time: int = 1430
 
 #The current day starting at 1
 var day: int = 1
@@ -32,6 +34,8 @@ var maxWakeTime: int = 1680
 func _time_cycle():
 	time += 1
 	wakeTime += 1
+	if time in diffIncreaseTimes:
+		_increase_difficulty()
 	if time >= 1440:
 		day += 1
 		currentWeekday += 1
@@ -47,6 +51,9 @@ func _time_cycle():
 #Runs when player sleeps or passes out, adds 8hrs to the current time
 #and sets the time since last rest to 0
 func player_sleep():
+	for incTime in diffIncreaseTimes:
+		if time + 480 >= incTime && time < incTime:
+			_increase_difficulty() 
 	time += 480
 	wakeTime = 0
 
@@ -54,6 +61,12 @@ func player_sleep():
 #Runs on 00:00 Sunday, handles the charging of rent to player
 func _rent_due():
 	rentDue.emit()
+
+
+#Increases the game difficulty
+func _increase_difficulty():
+	print("difficulty increased!")
+	difficultyManager.increment_difficulty()
 
 
 #Returns the current time in minutes since 00:00

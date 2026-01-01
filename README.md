@@ -55,8 +55,11 @@ This is a small hacking game made in godot based on hacknet, greyhack, bitburner
 	<li><del>Crypto currency</del></li>
 	<li><del>Some kind of gameplay</del></li>
 	<li><del>Rent system</del></li>
-	<li>Exploit discovery cycle</li> 
-	<li>Ingame notification system</li>
+	<li><del>Ingame notification system</del></li>
+	<li>Exploit discovery cycle</li>
+	<li>Progression(EX. Upgrades, Shop, Quests, etc..)</li>
+	<li>Sustainable income</li>
+	<li>Win condition</li>
   </ul>
   <h5>
 	Obviously this isn't all the features that will be added, also probably won't be finished in order.</br>
