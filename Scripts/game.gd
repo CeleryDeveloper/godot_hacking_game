@@ -5,6 +5,7 @@ const ResponseNoHistory = preload("res://Scenes/responseNoHistory.tscn")
 const Response = preload("res://Scenes/response.tscn")
 const RhythmScene = preload("res://Scenes/rhythm.tscn")
 const notificationScene = preload("res://Scenes/notification.tscn")
+const mailboxScene = preload("res://Scenes/mailbox.tscn")
 
 
 var maxScrollLength = 0
@@ -23,7 +24,7 @@ var lost: bool = false
 @onready var player: Player = $Player
 @onready var difficultyManager: DifficultyManager = $DifficultyManager
 #Used in 'load_rhythm_scene'
-@onready var minigameShutdownExcludedNodes: Array = [difficultyManager, player, $MusicManager, $TimeManager, $MinuteTimer, $MusicTimer]
+@onready var newSceneShutdownExcludedNodes: Array = [difficultyManager, player, $MusicManager, $TimeManager, $MinuteTimer, $MusicTimer]
 
 
 func _ready() -> void:
@@ -95,33 +96,39 @@ func _charge_rent():
 		_add_response(rentMessage)
 
 
+func load_mail_scene():
+	_load_scene_prep()
+	
+	var newScene: Mailbox = mailboxScene.instantiate()
+	
+	newScene.set_game_manager(self)
+	
+	add_child(newScene)
+
+
+func deload_mail_scene(mail: Mailbox):
+	_deload_scene_prep()
+	
+	mail.queue_free()
+
+
 #Loads the rhythm game
 func load_rhythm_scene(userToDecrypt: User):
+	_load_scene_prep()
+	
 	var newScene: RhythmManager = RhythmScene.instantiate()
 	newScene.set_user(userToDecrypt)
 	newScene.set_password(userToDecrypt.get_password())
 	newScene.set_game_manager(self)
 	newScene.set_difficulty(difficultyManager.get_difficulty())
 	
-	#Disables all children of 'game' so they don't cause issues during the mini game, 
-	#excluding nodes in 'minigameShutdownExcludedNodes'.
-	for child in get_children():
-		if child in minigameShutdownExcludedNodes:
-			continue
-		child.PROCESS_MODE_DISABLED
-	
-	#Makes it so player can't type in the input while playing 'rhythm'
-	input.release_focus()
 	add_child(newScene)
 
 
 #Deloads the rhythm game
 func deload_rhythm_scene(rhythm: RhythmManager, winState: bool, user: User):
+	_deload_scene_prep()
 	var decryptMessage = ResponseNoHistory.instantiate()
-	
-	#Re-enables all children of 'game'
-	for child in get_children():
-		child.PROCESS_MODE_INHERIT
 	
 	#Win/fail message
 	if winState == true:
@@ -133,10 +140,31 @@ func deload_rhythm_scene(rhythm: RhythmManager, winState: bool, user: User):
 		decryptMessage.text = "[color=red]Failed[/color] to decrypt password!"
 	_add_response(decryptMessage)
 	
-	#Makes player be able to type in input after rhythm is over
-	input.grab_focus()
 	
 	rhythm.queue_free()
+
+
+#Handles code that needs to be run everytime a scene is loaded
+func _load_scene_prep():
+	#Disables all children of 'game' so they don't cause issues during the mini game, 
+	#excluding nodes in 'minigameShutdownExcludedNodes'.
+	for child in get_children():
+		if child in newSceneShutdownExcludedNodes:
+			continue
+		child.PROCESS_MODE_DISABLED
+	
+	#Makes it so player can't type in console in different scene
+	input.release_focus()
+
+
+#Handles code that needs to run everytime a scene is deloaded
+func _deload_scene_prep():
+	#Re-enables all children of 'game'
+	for child in get_children():
+		child.PROCESS_MODE_INHERIT
+	
+	#Makes player be able to type in input after rhythm is over
+	input.grab_focus()
 
 
 #Navigates the history of inputs using arrow keys

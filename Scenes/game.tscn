@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://flpjnlaxcsla"]
+[gd_scene format=3 uid="uid://flpjnlaxcsla"]
 
 [ext_resource type="Script" uid="uid://qv8havl8xytj" path="res://Scripts/game.gd" id="1_36ffd"]
 [ext_resource type="Script" uid="uid://dw1b56x7des5o" path="res://Scripts/input.gd" id="1_h1hun"]
@@ -31,7 +31,7 @@ bg_color = Color(0, 0.0509804, 0, 0.364706)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b1b2a"]
 
-[node name="Game" type="Control"]
+[node name="Game" type="Control" unique_id=843493459]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -40,35 +40,35 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_36ffd")
 
-[node name="DifficultyManager" parent="." instance=ExtResource("2_o5yvi")]
+[node name="DifficultyManager" parent="." unique_id=1505134542 instance=ExtResource("2_o5yvi")]
 
-[node name="Player" type="Node" parent="."]
+[node name="Player" type="Node" parent="." unique_id=474487573]
 script = ExtResource("2_ldgsr")
 
-[node name="MusicManager" type="Node" parent="."]
+[node name="MusicManager" type="Node" parent="." unique_id=201526677]
 script = ExtResource("2_v158k")
 
-[node name="MusicLevel1" type="AudioStreamPlayer" parent="MusicManager"]
+[node name="MusicLevel1" type="AudioStreamPlayer" parent="MusicManager" unique_id=50418442]
 stream = SubResource("AudioStreamPlaylist_v158k")
 volume_db = -11.0
 
-[node name="TimeManager" type="Node" parent="."]
+[node name="TimeManager" type="Node" parent="." unique_id=309153565]
 script = ExtResource("7_1l0tm")
 
-[node name="CommandProcessor" type="Node" parent="."]
+[node name="CommandProcessor" type="Node" parent="." unique_id=1367650054]
 script = ExtResource("2_5aoqe")
 
-[node name="NetworkManager" type="Node" parent="."]
+[node name="NetworkManager" type="Node" parent="." unique_id=2087589047]
 script = ExtResource("3_5u0fr")
 startingComputers = 100
 maxComputers = 100
 
-[node name="Computer" parent="NetworkManager" instance=ExtResource("3_xo6vp")]
+[node name="Computer" parent="NetworkManager" unique_id=396528241 instance=ExtResource("3_xo6vp")]
 computerName = "home"
 computerID = 192324
 playerOwned = true
 
-[node name="Terminal" type="PanelContainer" parent="."]
+[node name="Terminal" type="PanelContainer" parent="." unique_id=1502112768]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -77,47 +77,47 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_b466x")
 
-[node name="MarginContainer" type="MarginContainer" parent="Terminal"]
+[node name="MarginContainer" type="MarginContainer" parent="Terminal" unique_id=865343173]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="Rows" type="VBoxContainer" parent="Terminal/MarginContainer"]
+[node name="Rows" type="VBoxContainer" parent="Terminal/MarginContainer" unique_id=802108835]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Stdout" type="PanelContainer" parent="Terminal/MarginContainer/Rows"]
+[node name="Stdout" type="PanelContainer" parent="Terminal/MarginContainer/Rows" unique_id=1193343825]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_2emde")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Terminal/MarginContainer/Rows/Stdout"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Terminal/MarginContainer/Rows/Stdout" unique_id=342141490]
 layout_mode = 2
 
-[node name="TerminalHistory" type="VBoxContainer" parent="Terminal/MarginContainer/Rows/Stdout/ScrollContainer"]
+[node name="TerminalHistory" type="VBoxContainer" parent="Terminal/MarginContainer/Rows/Stdout/ScrollContainer" unique_id=1969976855]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 20
 
-[node name="InputArea" type="PanelContainer" parent="Terminal/MarginContainer/Rows"]
+[node name="InputArea" type="PanelContainer" parent="Terminal/MarginContainer/Rows" unique_id=1532398721]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_jr0uj")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Terminal/MarginContainer/Rows/InputArea"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Terminal/MarginContainer/Rows/InputArea" unique_id=1503255788]
 layout_mode = 2
 
-[node name="Caret" type="Label" parent="Terminal/MarginContainer/Rows/InputArea/HBoxContainer"]
+[node name="Caret" type="Label" parent="Terminal/MarginContainer/Rows/InputArea/HBoxContainer" unique_id=1506216083]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.691357, 0.691357, 0.691357, 1)
 theme_override_fonts/font = ExtResource("5_wrohv")
 theme_override_font_sizes/font_size = 25
 text = " > "
 
-[node name="Input" type="LineEdit" parent="Terminal/MarginContainer/Rows/InputArea/HBoxContainer"]
+[node name="Input" type="LineEdit" parent="Terminal/MarginContainer/Rows/InputArea/HBoxContainer" unique_id=2065101406]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.690196, 0.690196, 0.690196, 1)
@@ -130,20 +130,27 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_b1b2a")
 caret_blink = true
 script = ExtResource("1_h1hun")
 
-[node name="BatchTimer" type="Timer" parent="."]
+[node name="MailButton" type="Button" parent="Terminal" unique_id=1855558803]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+text = "!!MAIL!!"
+
+[node name="BatchTimer" type="Timer" parent="." unique_id=1521333703]
 wait_time = 0.05
 autostart = true
 
-[node name="MinuteTimer" type="Timer" parent="."]
+[node name="MinuteTimer" type="Timer" parent="." unique_id=885377248]
 autostart = true
 
-[node name="MusicTimer" type="Timer" parent="."]
+[node name="MusicTimer" type="Timer" parent="." unique_id=291375856]
 autostart = true
 
 [connection signal="passout" from="TimeManager" to="." method="_player_passout"]
 [connection signal="rentDue" from="TimeManager" to="." method="_charge_rent"]
 [connection signal="text_submitted" from="Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input" to="." method="_on_input_text_submitted"]
 [connection signal="text_submitted" from="Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input" to="Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input" method="_on_text_submitted"]
+[connection signal="pressed" from="Terminal/MailButton" to="." method="load_mail_scene"]
 [connection signal="timeout" from="BatchTimer" to="NetworkManager" method="_batch_gen"]
 [connection signal="timeout" from="MinuteTimer" to="TimeManager" method="_time_cycle"]
 [connection signal="timeout" from="MusicTimer" to="MusicManager" method="adaptive_music"]

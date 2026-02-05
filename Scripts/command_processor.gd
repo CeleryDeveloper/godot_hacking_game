@@ -450,6 +450,9 @@ func decrypt(fullCommand: Array):
 	if userToDecrypt == null:
 		return "user [color=red]'%s'[/color] does not exist!" % [fullCommand[1]]
 	
+	if userToDecrypt.get_pass_revealed() == true:
+		return "user password already [color=green]decrypted![/color]"
+	
 	#Loads 'rhythm' mini game
 	gameManager.load_rhythm_scene(userToDecrypt)
 	return "decrypting..."
