@@ -24,13 +24,23 @@ var connectedNetNode: Net_Node
 var crashed: bool = false
 
 
-#Runs on each 'refreshTimer' timeout
-func _refresh():
+func _ready() -> void:
 	for user: User in users:
 		if root.find_item_by_path(self ,_parse_path("/users/" + user.get_user_name() + "/"), "/users/" + user.get_user_name() + "/") != null:
 			continue
 		var userDir = add_directory(user.get_user_name(), user.get_perms(),user.get_perms(), "/users/", user)
 		userDir.set_parent_comp(self)
+
+
+#!!I've commented this out because it causes unnessasary lag spikes, but I'm leaving
+#it here incase something breaks!!
+#Runs on each 'refreshTimer' timeout
+#func _refresh():
+	#for user: User in users:
+		#if root.find_item_by_path(self ,_parse_path("/users/" + user.get_user_name() + "/"), "/users/" + user.get_user_name() + "/") != null:
+			#continue
+		#var userDir = add_directory(user.get_user_name(), user.get_perms(),user.get_perms(), "/users/", user)
+		#userDir.set_parent_comp(self)
 
 
 func set_ID(newID: int) -> void:
@@ -137,6 +147,8 @@ func add_user(newUserName: String, password: String = "", perms: String = "guest
 	newUser.set_password(password)
 	newUser.set_perms(perms)
 	newUser.set_crypto(crypto)
+	var userDir = add_directory(newUser.get_user_name(), newUser.get_perms(),newUser.get_perms(), "/users/", newUser)
+	userDir.set_parent_comp(self)
 	self.add_child(newUser)
 	return true
 
@@ -156,6 +168,8 @@ func remove_user(user: String) -> bool:
 	var toRemove = users.find(user)
 	if  toRemove != -1 && user != "root":
 		users.remove_at(toRemove)
+		var userDir: Directory = root.find_item_by_path(self ,_parse_path("/users/" + toRemove.get_user_name() + "/"), "/users/" + toRemove.get_user_name() + "/")
+		userDir.queue_free()
 		return true
 	return false
 

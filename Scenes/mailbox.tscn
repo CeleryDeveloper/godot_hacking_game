@@ -23,7 +23,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_juoc8")
 
-[node name="baseContainer" type="PanelContainer" parent="." unique_id=97889309]
+[node name="BaseContainer" type="PanelContainer" parent="." unique_id=97889309]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,28 +32,28 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_vnf51")
 
-[node name="Conversations" type="PanelContainer" parent="baseContainer" unique_id=2030424266]
+[node name="Conversations" type="Panel" parent="BaseContainer" unique_id=1252325546]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_juoc8")
 
-[node name="Message" type="PanelContainer" parent="baseContainer" unique_id=391019327]
+[node name="Message" type="PanelContainer" parent="BaseContainer" unique_id=391019327]
 custom_minimum_size = Vector2(790.145, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_dflpy")
 
-[node name="PanelContainer" type="PanelContainer" parent="baseContainer" unique_id=1602302336]
+[node name="Responses" type="PanelContainer" parent="BaseContainer" unique_id=1602302336]
 custom_minimum_size = Vector2(182, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_jkr01")
 
-[node name="BackButton" type="Button" parent="baseContainer" unique_id=1216801389]
+[node name="BackButton" type="Button" parent="BaseContainer" unique_id=1216801389]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 text = "placeholder"
 
-[connection signal="pressed" from="baseContainer/BackButton" to="." method="exit_scene"]
+[connection signal="pressed" from="BaseContainer/BackButton" to="." method="exit_scene"]
