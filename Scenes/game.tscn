@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://dmjje3pjfprba" path="res://Scenes/computer.tscn" id="3_xo6vp"]
 [ext_resource type="FontFile" uid="uid://67rccbw0m8xx" path="res://Fonts/VT323/VT323-Regular.ttf" id="5_wrohv"]
 [ext_resource type="Script" uid="uid://c08xlca2i15rq" path="res://Scripts/time_manager.gd" id="7_1l0tm"]
+[ext_resource type="PackedScene" uid="uid://bvxu855oexabi" path="res://Scenes/mail_manager.tscn" id="7_rfjv2"]
+[ext_resource type="PackedScene" uid="uid://rl45x8g7korp" path="res://Scenes/contact.tscn" id="12_rku1e"]
 
 [sub_resource type="AudioStreamPlaylist" id="AudioStreamPlaylist_v158k"]
 shuffle = true
@@ -54,6 +56,8 @@ volume_db = -11.0
 
 [node name="TimeManager" type="Node" parent="." unique_id=309153565]
 script = ExtResource("7_1l0tm")
+
+[node name="MailManager" parent="." unique_id=512952878 instance=ExtResource("7_rfjv2")]
 
 [node name="CommandProcessor" type="Node" parent="." unique_id=1367650054]
 script = ExtResource("2_5aoqe")
@@ -145,6 +149,10 @@ autostart = true
 
 [node name="MusicTimer" type="Timer" parent="." unique_id=291375856]
 autostart = true
+
+[node name="Contacts" type="Node" parent="." unique_id=2135386716]
+
+[node name="Contact" parent="Contacts" unique_id=1882381551 instance=ExtResource("12_rku1e")]
 
 [connection signal="passout" from="TimeManager" to="." method="_player_passout"]
 [connection signal="rentDue" from="TimeManager" to="." method="_charge_rent"]

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bvxu855oexabi"]
+
+[ext_resource type="Script" uid="uid://co6bpfp8a0xcy" path="res://Scripts/mail_manager.gd" id="1_65td5"]
+
+[node name="MailManager" type="Node" unique_id=512952878]
+script = ExtResource("1_65td5")

@@ -20,6 +20,7 @@ var lost: bool = false
 @onready var scroll = $Terminal/MarginContainer/Rows/Stdout/ScrollContainer
 @onready var scrollBar = scroll.get_v_scroll_bar()
 @onready var networkManager = $NetworkManager
+@onready var mailManager: MailManager = $MailManager
 @onready var input: LineEdit = $Terminal/MarginContainer/Rows/InputArea/HBoxContainer/Input
 @onready var player: Player = $Player
 @onready var difficultyManager: DifficultyManager = $DifficultyManager
@@ -83,7 +84,6 @@ func _charge_rent():
 	
 	#Subtracts rent from player's balance
 	player.cash_transaction(-player.get_rent_cost())
-	
 	if player.get_cash_balance() < 0:
 		#Makes player lose if they can't pay rent
 		lost = true
@@ -102,6 +102,7 @@ func load_mail_scene():
 	var newScene: Mailbox = mailboxScene.instantiate()
 	
 	newScene.set_game_manager(self)
+	newScene.set_mail_manager(mailManager)
 	
 	add_child(newScene)
 
