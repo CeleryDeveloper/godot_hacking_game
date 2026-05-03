@@ -7,6 +7,15 @@ class_name Contact
 var playerTurn: bool = false
 var messagesNPC: Array[String] = []
 var messagesPlayer: Array[String] = []
+var contactId: int = TYPE_NIL
+
+
+func set_contact_id(newId: int):
+	contactId = newId
+
+
+func get_contact_id() -> int:
+	return contactId
 
 
 func set_contact_name(newName: String):

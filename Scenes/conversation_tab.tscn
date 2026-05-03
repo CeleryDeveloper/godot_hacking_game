@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://ba26sdccc7biw" path="res://Scripts/conversation_tab.gd" id="1_5icep"]
 [ext_resource type="FontFile" uid="uid://67rccbw0m8xx" path="res://Fonts/VT323/VT323-Regular.ttf" id="2_6ydhv"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5icep"]
+
 [node name="ConversationTab" type="PanelContainer" unique_id=847826911]
 custom_minimum_size = Vector2(0, 76)
 anchors_preset = -1
@@ -26,3 +28,9 @@ theme_override_fonts/font = ExtResource("2_6ydhv")
 theme_override_font_sizes/font_size = 22
 text = "PREVIEW"
 text_overrun_behavior = 5
+
+[node name="Button" type="Button" parent="." unique_id=456396118]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_5icep")
+
+[connection signal="pressed" from="Button" to="." method="open_convo"]
